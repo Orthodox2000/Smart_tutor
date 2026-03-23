@@ -44,7 +44,11 @@ export function SiteFooter() {
                   href={item.href}
                   target="_blank"
                   rel="noreferrer"
-                  className="surface-soft rounded-2xl px-4 py-3 text-sm font-semibold text-[var(--color-heading)] shine-hover"
+                  className="social-tile surface-soft rounded-2xl px-4 py-3 text-sm font-semibold text-[var(--color-heading)] shine-hover"
+                  style={{
+                    ["--social-color" as string]: item.color,
+                    ["--social-glow" as string]: item.glow,
+                  }}
                 >
                   {item.label}
                 </a>

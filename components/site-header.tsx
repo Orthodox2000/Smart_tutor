@@ -10,13 +10,14 @@ export async function SiteHeader() {
   const links = [
     { href: "/", label: "Home" },
     { href: "/courses", label: "Courses" },
+    { href: "/mock-test", label: "Mock Test" },
     { href: "/contact", label: "Contact" },
     { href: "/dashboard", label: session ? "Dashboard" : "Preview" },
   ];
 
   return (
     <header className="section-shell sticky top-4 z-30 pt-5">
-      <div className="surface shell-bar rounded-full px-4 py-3 sm:px-5">
+      <div className="surface shell-bar rounded-[2rem] px-4 py-3 sm:px-5 lg:rounded-full">
         <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
           <div className="flex items-center justify-between gap-4">
             <Link href="/" className="brand-mark whitespace-nowrap">
@@ -27,7 +28,7 @@ export async function SiteHeader() {
             </div>
           </div>
 
-          <nav className="flex flex-wrap items-center justify-center gap-2 sm:gap-3">
+          <nav className="grid grid-cols-2 gap-2 sm:grid-cols-3 lg:flex lg:flex-wrap lg:items-center lg:justify-center lg:gap-3">
             {links.map((link) => (
               <Link
                 key={link.href}
@@ -76,7 +77,7 @@ export async function SiteHeader() {
                 {session.name} | {session.label}
               </p>
             </div>
-            <div className="flex items-center justify-center gap-3">
+            <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
               <Link href="/dashboard" className="action-button px-5 py-3">
                 Dashboard
               </Link>
@@ -84,7 +85,7 @@ export async function SiteHeader() {
             </div>
           </div>
         ) : (
-          <div className="mt-3 flex justify-center lg:hidden">
+          <div className="mt-3 grid grid-cols-1 lg:hidden">
             <Link href="/login" className="action-button px-5 py-3">
               Login
             </Link>

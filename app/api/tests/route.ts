@@ -14,7 +14,7 @@ export async function GET() {
   }
 
   return NextResponse.json({
-    tests: getTestsForRole(session.role),
+    tests: getTestsForRole(session.role, session.id),
   });
 }
 
@@ -32,6 +32,13 @@ export async function POST(request: Request) {
     title?: string;
     status?: string;
     summary?: string;
+    assignedUserIds?: string[];
+    questions?: {
+      id?: string;
+      prompt?: string;
+      options?: string[];
+      answer?: number;
+    }[];
   };
 
   const test = createTestDraft({
@@ -39,6 +46,19 @@ export async function POST(request: Request) {
     status: body.status,
     summary: body.summary,
     createdBy: session.name,
+    assignedUserIds: body.assignedUserIds,
+    questions: body.questions?.map((question, index) => ({
+      id: question.id?.trim() || `draft-question-${index + 1}`,
+      prompt: question.prompt?.trim() || `Draft question ${index + 1}`,
+      options:
+        question.options?.map((option) => option.trim()).filter(Boolean) ?? [
+          "Option A",
+          "Option B",
+          "Option C",
+          "Option D",
+        ],
+      answer: typeof question.answer === "number" ? question.answer : 0,
+    })),
   });
 
   return NextResponse.json({ test }, { status: 201 });

@@ -2,37 +2,38 @@
 
 :root {
   --font-sans:
-    "Segoe UI Variable", "Aptos", "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+    "Segoe UI", "Aptos", "Helvetica Neue", Arial,
+    sans-serif;
   --font-mono:
     "Cascadia Code", "Consolas", "SFMono-Regular", "Liberation Mono", monospace;
-  --color-background: #fffef9;
-  --color-background-strong: #faf4e7;
-  --color-panel: rgba(255, 255, 255, 0.88);
-  --color-panel-strong: rgba(255, 253, 247, 0.96);
-  --color-heading: #241c10;
-  --color-body: #53422d;
-  --color-muted: #8a7655;
-  --color-border: rgba(180, 146, 74, 0.22);
-  --color-accent: #cc9a39;
-  --color-accent-strong: #a87a22;
-  --color-highlight: rgba(255, 245, 215, 0.68);
-  --shadow-soft: 0 22px 56px rgba(102, 80, 38, 0.08);
+  --color-background: #fbf8f1;
+  --color-background-strong: #f4efdf;
+  --color-panel: rgba(255, 255, 255, 0.9);
+  --color-panel-strong: rgba(255, 252, 246, 0.98);
+  --color-heading: #21180c;
+  --color-body: #433526;
+  --color-muted: #695846;
+  --color-border: rgba(133, 102, 50, 0.16);
+  --color-accent: #a97a2d;
+  --color-accent-strong: #d4ad52;
+  --color-highlight: rgba(169, 122, 45, 0.12);
+  --shadow-soft: 0 24px 60px rgba(22, 32, 51, 0.08);
   color-scheme: light;
 }
 
 [data-theme="dark"] {
-  --color-background: #17120c;
-  --color-background-strong: #20180f;
-  --color-panel: rgba(38, 30, 20, 0.88);
-  --color-panel-strong: rgba(46, 36, 24, 0.94);
-  --color-heading: #fff8e7;
-  --color-body: #ead8b2;
-  --color-muted: #c8b083;
-  --color-border: rgba(215, 184, 112, 0.18);
-  --color-accent: #e0b253;
-  --color-accent-strong: #c69535;
-  --color-highlight: rgba(224, 178, 83, 0.14);
-  --shadow-soft: 0 24px 60px rgba(0, 0, 0, 0.24);
+  --color-background: #0d1320;
+  --color-background-strong: #111a2c;
+  --color-panel: rgba(17, 26, 44, 0.9);
+  --color-panel-strong: rgba(21, 32, 54, 0.96);
+  --color-heading: #f2f6ff;
+  --color-body: #c7d5ec;
+  --color-muted: #8da0c1;
+  --color-border: rgba(141, 160, 193, 0.16);
+  --color-accent: #e0b95a;
+  --color-accent-strong: #f4d487;
+  --color-highlight: rgba(224, 185, 90, 0.14);
+  --shadow-soft: 0 28px 72px rgba(0, 0, 0, 0.34);
   color-scheme: dark;
 }
 
@@ -55,8 +56,8 @@ body {
   min-height: 100vh;
   overflow-x: hidden;
   background:
-    radial-gradient(circle at top left, rgba(204, 154, 57, 0.16), transparent 24%),
-    radial-gradient(circle at top right, rgba(204, 154, 57, 0.1), transparent 22%),
+    radial-gradient(circle at top left, rgba(212, 173, 82, 0.18), transparent 24%),
+    radial-gradient(circle at top right, rgba(169, 122, 45, 0.12), transparent 22%),
     linear-gradient(180deg, var(--color-background) 0%, var(--color-background-strong) 100%);
   color: var(--color-body);
   font-family: var(--font-sans);
@@ -68,12 +69,12 @@ body::before {
   position: fixed;
   inset: 0;
   pointer-events: none;
-  opacity: 0.18;
+  opacity: 0.16;
   background-image:
-    linear-gradient(rgba(180, 146, 74, 0.07) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(180, 146, 74, 0.05) 1px, transparent 1px);
+    linear-gradient(rgba(169, 122, 45, 0.05) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(212, 173, 82, 0.04) 1px, transparent 1px);
   background-size: 36px 36px;
-  mask-image: linear-gradient(180deg, rgba(0, 0, 0, 0.32), transparent 86%);
+  mask-image: linear-gradient(180deg, rgba(0, 0, 0, 0.3), transparent 86%);
 }
 
 a,
@@ -86,7 +87,8 @@ textarea {
     border-color 180ms ease,
     color 180ms ease,
     box-shadow 180ms ease,
-    opacity 180ms ease;
+    opacity 180ms ease,
+    transform 220ms ease;
 }
 
 a,
@@ -102,11 +104,11 @@ textarea {
 }
 
 ::selection {
-  background: rgba(204, 154, 57, 0.24);
+  background: rgba(169, 122, 45, 0.22);
 }
 
 .section-shell {
-  width: min(1200px, calc(100vw - 2rem));
+  width: min(1240px, calc(100vw - 2rem));
   margin-inline: auto;
 }
 
@@ -134,11 +136,11 @@ textarea {
   background: linear-gradient(
     90deg,
     transparent 0%,
-    rgba(255, 255, 255, 0.38) 50%,
+    rgba(255, 255, 255, 0.3) 50%,
     transparent 100%
   );
   pointer-events: none;
-  transition: transform 420ms ease;
+  transition: transform 1000ms ease;
   z-index: 1;
 }
 
@@ -155,22 +157,23 @@ textarea {
   background: var(--color-panel);
   box-shadow:
     var(--shadow-soft),
-    inset 0 1px 0 rgba(255, 255, 255, 0.44);
+    inset 0 1px 0 rgba(255, 255, 255, 0.45);
   backdrop-filter: blur(18px);
 }
 
 .surface-soft {
   border: 1px solid var(--color-border);
-  background: color-mix(in srgb, var(--color-panel-strong) 90%, transparent);
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.25);
+  background: color-mix(in srgb, var(--color-panel-strong) 88%, transparent);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.18);
 }
 
 .shell-bar {
-  backdrop-filter: blur(20px);
+  backdrop-filter: blur(18px);
+  overflow: hidden;
 }
 
 .section-label {
-  font-size: 0.75rem;
+  font-size: 0.74rem;
   font-weight: 700;
   letter-spacing: 0.24em;
   text-transform: uppercase;
@@ -179,9 +182,9 @@ textarea {
 
 .section-title {
   margin-top: 0.75rem;
-  font-size: clamp(2rem, 4vw, 3.35rem);
+  font-size: clamp(2rem, 4vw, 3.3rem);
   line-height: 1.05;
-  font-weight: 680;
+  font-weight: 700;
   letter-spacing: -0.05em;
   color: var(--color-heading);
 }
@@ -189,7 +192,7 @@ textarea {
 .keyword-line {
   font-size: 0.82rem;
   font-weight: 700;
-  letter-spacing: 0.24em;
+  letter-spacing: 0.22em;
   text-transform: uppercase;
   color: var(--color-accent);
 }
@@ -199,9 +202,9 @@ textarea {
   align-items: center;
   border-radius: 999px;
   border: 1px solid var(--color-border);
-  background: color-mix(in srgb, var(--color-panel-strong) 84%, transparent);
-  padding: 0.45rem 0.8rem;
-  font-size: 0.75rem;
+  background: color-mix(in srgb, var(--color-panel-strong) 86%, transparent);
+  padding: 0.45rem 0.82rem;
+  font-size: 0.74rem;
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.16em;
@@ -213,24 +216,21 @@ textarea {
   align-items: center;
   gap: 0.6rem;
   border-radius: 999px;
-  background: linear-gradient(
-    135deg,
-    var(--color-accent),
-    var(--color-accent-strong)
-  );
-  color: #fffefa;
+  background: linear-gradient(135deg, var(--color-accent), var(--color-accent-strong));
+  color: white;
   font-weight: 700;
-  box-shadow: 0 16px 34px rgba(88, 78, 42, 0.18);
+  box-shadow: 0 18px 36px rgba(169, 122, 45, 0.22);
 }
 
 .action-button:hover {
-  box-shadow: 0 20px 36px rgba(88, 78, 42, 0.24);
+  transform: translateY(-1px);
+  box-shadow: 0 22px 40px rgba(169, 122, 45, 0.28);
 }
 
 .hero-orb {
   position: absolute;
   border-radius: 999px;
-  background: radial-gradient(circle, rgba(204, 154, 57, 0.16), transparent 70%);
+  background: radial-gradient(circle, rgba(212, 173, 82, 0.2), transparent 70%);
   filter: blur(18px);
   animation: drift 12s ease-in-out infinite;
   pointer-events: none;
@@ -239,8 +239,8 @@ textarea {
 .grid-overlay,
 .graph-paper {
   background-image:
-    linear-gradient(rgba(180, 146, 74, 0.12) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(180, 146, 74, 0.08) 1px, transparent 1px);
+    linear-gradient(rgba(169, 122, 45, 0.08) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(212, 173, 82, 0.08) 1px, transparent 1px);
   background-size: 26px 26px;
 }
 
@@ -252,7 +252,16 @@ textarea {
 }
 
 .nav-link {
+  display: inline-flex;
+  min-height: 2.75rem;
+  min-width: 6.25rem;
+  max-width: 100%;
+  align-items: center;
+  justify-content: center;
   white-space: nowrap;
+  text-align: center;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .nav-link:hover {
@@ -263,8 +272,88 @@ textarea {
 .media-slot {
   border: 1px dashed var(--color-border);
   background:
-    linear-gradient(135deg, rgba(204, 154, 57, 0.08), rgba(245, 222, 170, 0.16)),
+    linear-gradient(135deg, rgba(212, 173, 82, 0.09), rgba(169, 122, 45, 0.08)),
     color-mix(in srgb, var(--color-panel-strong) 86%, transparent);
+}
+
+.dashboard-sidebar {
+  background:
+    linear-gradient(180deg, rgba(60, 42, 17, 0.98) 0%, rgba(39, 27, 12, 1) 100%);
+  color: #fff4d6;
+}
+
+[data-theme="dark"] .dashboard-sidebar {
+  background:
+    linear-gradient(180deg, rgba(14, 22, 39, 0.98) 0%, rgba(11, 17, 31, 1) 100%);
+}
+
+.dashboard-sidebar .surface-soft {
+  background: rgba(255, 246, 224, 0.08);
+  border-color: rgba(255, 236, 196, 0.1);
+  color: #fff4d6;
+}
+
+.social-tile {
+  border-color: var(--social-glow, var(--color-border));
+  transition:
+    transform 220ms ease,
+    border-color 220ms ease,
+    box-shadow 220ms ease,
+    color 220ms ease,
+    background-color 220ms ease;
+}
+
+.social-tile:hover {
+  transform: translateY(-2px);
+  color: var(--social-color, var(--color-heading));
+  box-shadow: 0 14px 28px var(--social-glow, rgba(0, 0, 0, 0.12));
+}
+
+.bookmark-button {
+  display: inline-flex;
+  min-width: 10.5rem;
+  align-items: center;
+  justify-content: center;
+  border-radius: 1.25rem 1.25rem 0 1.25rem;
+  padding: 0.95rem 1.1rem;
+  font-size: 0.95rem;
+  font-weight: 700;
+  letter-spacing: 0.01em;
+}
+
+.modal-overlay {
+  background: rgba(33, 24, 12, 0.48);
+  backdrop-filter: blur(8px);
+}
+
+.quiz-option[data-correct="true"] {
+  border-color: rgba(48, 160, 78, 0.38);
+  background: rgba(48, 160, 78, 0.12);
+}
+
+.quiz-option[data-wrong="true"] {
+  border-color: rgba(200, 52, 52, 0.32);
+  background: rgba(200, 52, 52, 0.1);
+}
+
+.quiz-option[data-selected="true"] {
+  border-color: rgba(169, 122, 45, 0.36);
+  background: rgba(169, 122, 45, 0.1);
+  box-shadow: 0 14px 28px rgba(169, 122, 45, 0.12);
+}
+
+.quiz-option[data-locked="true"] {
+  border-color: rgba(169, 122, 45, 0.3);
+  background: rgba(212, 173, 82, 0.12);
+}
+
+.quiz-option-static {
+  transition:
+    background-color 180ms ease,
+    border-color 180ms ease,
+    color 180ms ease,
+    box-shadow 180ms ease,
+    opacity 180ms ease;
 }
 
 .animate-appear {
@@ -296,11 +385,24 @@ textarea {
 
 @media (max-width: 900px) {
   .section-shell {
-    width: min(100vw - 1rem, 1200px);
+    width: min(100vw - 1rem, 1240px);
   }
 }
 
 @media (max-width: 768px) {
+  .shell-bar {
+    border-radius: 2rem;
+    padding-inline: 1rem;
+  }
+
+  .nav-link {
+    min-width: 0;
+    width: 100%;
+    min-height: 2.6rem;
+    padding-inline: 0.9rem;
+    font-size: 0.88rem;
+  }
+
   .section-title,
   .brand-mark {
     text-align: center;

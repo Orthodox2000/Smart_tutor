@@ -20,6 +20,7 @@
 - `app/page.tsx`: landing page
 - `app/login/page.tsx`: mock login
 - `app/dashboard/page.tsx`: role-aware dashboard
+- `app/mock-test/page.tsx`: interactive mock-test experience
 - `app/api/**/route.ts`: local APIs
 - `components/theme-provider.tsx`: theme state
 - `components/mock-login-form.tsx`: demo login client flow
@@ -38,6 +39,7 @@
   3. `AGENTS.md` or this guide if the pattern becomes a project convention
 - Do not connect Firebase auth until the team is ready to replace the mock flow end-to-end.
 - Keep route handlers JSON-based and easy to swap to real persistence later.
+- Interactive public modules like course popups and mock tests should read from `lib/mock-data.ts` or a local `app/api/**/route.ts` endpoint first, not from page-local arrays.
 
 ## Suggested next milestones
 

@@ -37,6 +37,7 @@ This version has breaking changes. APIs, conventions, and file structure may all
 ## Team consistency
 
 - Extend existing design tokens in `app/globals.css` rather than introducing isolated color systems.
+- Keep new pages on the same Figma-inspired SmartIQ theme: creamy white surfaces, dark slate/gold contrast, restrained gradients, rounded product panels, and consistent spacing across desktop and mobile.
 - Reuse the same surface, section, pill, and action button styles where possible.
 - Keep copy professional and institute-appropriate.
 - When adding new role features, update both UI and API authorization together.

@@ -1,11 +1,19 @@
 import type {
+  ContactAction,
+  ContactMethod,
   CourseItem,
   DashboardMetric,
+  DetailedCourse,
   DemoUserRecord,
+  ManagedUser,
   MessageItem,
   PermissionItem,
+  QuizQuestion,
   Role,
   SessionUser,
+  SocialLink,
+  TestQuestion,
+  TestSubmission,
   TestItem,
 } from "@/lib/types";
 
@@ -56,6 +64,24 @@ const demoUsers: DemoUserRecord[] = [
     program: "Placement Accelerator",
   },
   {
+    id: "student-2",
+    name: "Aarav Patil",
+    email: "aarav@smartiq.demo",
+    password: "Student@123",
+    role: "student",
+    label: "Student Workspace",
+    program: "Government Exams Coaching",
+  },
+  {
+    id: "student-3",
+    name: "Sneha Kulkarni",
+    email: "sneha@smartiq.demo",
+    password: "Student@123",
+    role: "student",
+    label: "Student Workspace",
+    program: "College Performance Support",
+  },
+  {
     id: "educator-1",
     name: "Amit Deshmukh",
     email: "amit@smartiq.demo",
@@ -65,8 +91,17 @@ const demoUsers: DemoUserRecord[] = [
     program: "Government Exams Faculty",
   },
   {
+    id: "educator-2",
+    name: "Neha Joshi",
+    email: "neha@smartiq.demo",
+    password: "Educator@123",
+    role: "educator",
+    label: "Educator Desk",
+    program: "Placement Faculty",
+  },
+  {
     id: "admin-1",
-    name: "Nisha Kulkarni",
+    name: "Ankit Mali",
     email: "admin@smartiq.demo",
     password: "Admin@123",
     role: "admin",
@@ -161,6 +196,36 @@ const courses: CourseItem[] = [
   },
 ];
 
+const placementMcq: TestQuestion[] = [
+  {
+    id: "pt-q1",
+    prompt: "Which data structure works on First In First Out principle?",
+    options: ["Stack", "Queue", "Tree", "Graph"],
+    answer: 1,
+  },
+  {
+    id: "pt-q2",
+    prompt: "Which communication skill is most important during HR interviews?",
+    options: ["Memorizing scripts", "Clarity and confidence", "Speaking very fast", "Avoiding examples"],
+    answer: 1,
+  },
+];
+
+const polityMcq: TestQuestion[] = [
+  {
+    id: "gk-q1",
+    prompt: "Who appoints the Prime Minister of India?",
+    options: ["Lok Sabha Speaker", "President", "Chief Justice of India", "Cabinet Secretary"],
+    answer: 1,
+  },
+  {
+    id: "gk-q2",
+    prompt: "Which house of Parliament is called the Upper House?",
+    options: ["Lok Sabha", "Rajya Sabha", "Vidhan Sabha", "Legislative Council"],
+    answer: 1,
+  },
+];
+
 const tests: TestItem[] = [
   {
     id: "test-1",
@@ -169,6 +234,9 @@ const tests: TestItem[] = [
     summary:
       "Time-bound aptitude assessment with sectional analytics and question-level review notes.",
     audience: ["student", "educator", "admin"],
+    assignedUserIds: ["student-1", "student-3"],
+    createdBy: "Amit Deshmukh",
+    questions: placementMcq,
   },
   {
     id: "test-2",
@@ -177,6 +245,9 @@ const tests: TestItem[] = [
     summary:
       "Educator-prepared revision paper covering reasoning, general awareness, and accuracy scoring.",
     audience: ["educator", "admin"],
+    assignedUserIds: ["student-2"],
+    createdBy: "Amit Deshmukh",
+    questions: polityMcq,
   },
   {
     id: "test-3",
@@ -185,6 +256,9 @@ const tests: TestItem[] = [
     summary:
       "Student-facing concept validation with performance bands, answer review, and remediation prompts.",
     audience: ["student", "educator", "admin"],
+    assignedUserIds: ["student-1"],
+    createdBy: "Neha Joshi",
+    questions: placementMcq,
   },
 ];
 
@@ -221,6 +295,31 @@ const messages: MessageItem[] = [
       "Two new educator accounts are awaiting final admin verification before onboarding into live batches.",
     channel: "Admin",
     audience: ["admin"],
+  },
+  {
+    id: "message-5",
+    title: "Weekly concept check result published",
+    body:
+      "Result for Weekly Concept Check is now available on the student board. Review the explanation notes before tomorrow's discussion.",
+    channel: "Results",
+    audience: ["student", "educator", "admin"],
+    userIds: ["student-1", "educator-2", "admin-1"],
+    author: "Neha Joshi",
+  },
+];
+
+const testSubmissions: TestSubmission[] = [
+  {
+    id: "submission-1",
+    testId: "test-3",
+    studentId: "student-1",
+    studentName: "Riya Sharma",
+    answers: [1, 1],
+    score: 2,
+    total: 2,
+    status: "published",
+    submittedAt: "2026-03-22T08:30:00.000Z",
+    publishedMessageTitle: "Weekly Concept Check result published",
   },
 ];
 
@@ -315,6 +414,263 @@ const dashboardStats: Record<Role, DashboardMetric[]> = {
   ],
 };
 
+const socialLinks: SocialLink[] = [
+  {
+    label: "WhatsApp",
+    href: "https://wa.me/919876543210?text=Hello%20SmartIQ%20Academy",
+    color: "#25D366",
+    glow: "rgba(37, 211, 102, 0.32)",
+  },
+  {
+    label: "Instagram",
+    href: "https://instagram.com/smartiqacademy",
+    color: "#E4405F",
+    glow: "rgba(228, 64, 95, 0.28)",
+  },
+  {
+    label: "Facebook",
+    href: "https://facebook.com/smartiqacademy",
+    color: "#1877F2",
+    glow: "rgba(24, 119, 242, 0.28)",
+  },
+  {
+    label: "LinkedIn",
+    href: "https://linkedin.com/company/smartiqacademy",
+    color: "#0A66C2",
+    glow: "rgba(10, 102, 194, 0.28)",
+  },
+  {
+    label: "YouTube",
+    href: "https://youtube.com/@smartiqacademy",
+    color: "#FF0000",
+    glow: "rgba(255, 0, 0, 0.24)",
+  },
+  {
+    label: "X / Twitter",
+    href: "https://x.com/smartiqacademy",
+    color: "#111827",
+    glow: "rgba(17, 24, 39, 0.22)",
+  },
+];
+
+const contactMethods: ContactMethod[] = [
+  {
+    label: "Admissions Hotline",
+    value: "+91 98765 43210",
+    href: "tel:+919876543210",
+    description: "Primary counselling and admissions support for all new enquiries.",
+  },
+  {
+    label: "Student Support Desk",
+    value: "+91 98190 11223",
+    href: "tel:+919819011223",
+    description: "Student schedule, test support, classroom timing, and batch coordination.",
+  },
+  {
+    label: "Faculty Coordination",
+    value: "+91 98204 55667",
+    href: "tel:+919820455667",
+    description: "Educator operations, live batch planning, and internal coordination access.",
+  },
+  {
+    label: "Admissions Mail",
+    value: "admissions@smartiqacademy.local",
+    href: "mailto:admissions@smartiqacademy.local",
+    description: "Course brochures, fee details, and program-specific discussions.",
+  },
+  {
+    label: "Student Mail",
+    value: "support@smartiqacademy.local",
+    href: "mailto:support@smartiqacademy.local",
+    description: "Student access help, result queries, and learning-material requests.",
+  },
+  {
+    label: "Visit The Academy",
+    value: "Sector 17, Vashi, Navi Mumbai",
+    href: "https://maps.google.com/?q=Vashi+Navi+Mumbai",
+    description: "Visit the branch for counselling, demo sessions, and admissions guidance.",
+  },
+];
+
+const contactActions: ContactAction[] = [
+  {
+    label: "Call Admissions",
+    href: "tel:+919876543210",
+    style: "primary",
+  },
+  {
+    label: "WhatsApp Counselling",
+    href: "https://wa.me/919876543210?text=Hello%20SmartIQ%20Academy",
+    style: "primary",
+  },
+  {
+    label: "Email SmartIQ",
+    href: "mailto:admissions@smartiqacademy.local",
+    style: "secondary",
+  },
+  {
+    label: "Campus Visit Request",
+    href: "mailto:hello@smartiqacademy.local?subject=Campus%20Visit%20Request",
+    style: "secondary",
+  },
+];
+
+const detailedCourses: DetailedCourse[] = [
+  {
+    id: "placement-accelerator",
+    tagline: "Career Readiness",
+    title: "Placement Accelerator Program",
+    description:
+      "A structured placement track for aptitude, interview preparation, communication, portfolio readiness, and recruiter-facing confidence building.",
+    duration: "8 to 12 weeks",
+    mode: "Hybrid classroom + practice sessions",
+    audience: "College students and final-year aspirants",
+    points: [
+      "Aptitude practice and timed mock tests",
+      "Resume, LinkedIn, and interview mentoring",
+      "Communication, GD, and mock HR rounds",
+    ],
+  },
+  {
+    id: "government-exams",
+    tagline: "Competitive Preparation",
+    title: "Government Exams Coaching",
+    description:
+      "Detailed exam-prep support with concepts, revision cycles, doubt resolution, weekly tests, and performance analysis for disciplined aspirants.",
+    duration: "Long-term and fast-track batches",
+    mode: "Offline core batches with revision support",
+    audience: "Government exam aspirants",
+    points: [
+      "Reasoning, quant, awareness, and language practice",
+      "Revision sprints and mock evaluation support",
+      "Mentor review and performance-based planning",
+    ],
+  },
+  {
+    id: "college-support",
+    tagline: "Academic Support",
+    title: "College Performance Support",
+    description:
+      "Academic guidance for concept clarity, subject coaching, assignments, and exam preparation with a student-confidence-first approach.",
+    duration: "Semester-based support",
+    mode: "Subject-wise mentoring and study support",
+    audience: "College students across streams",
+    points: [
+      "Concept strengthening for core subjects",
+      "Assignment and semester exam support",
+      "Study structure, discipline, and doubt clearing",
+    ],
+  },
+  {
+    id: "class-11-12-focus",
+    tagline: "Foundation Building",
+    title: "Class 11 and 12 Focus Batches",
+    description:
+      "Guided board-exam preparation with subject revisions, test discipline, concept reinforcement, and consistent academic reporting.",
+    duration: "Academic-year and revision formats",
+    mode: "Offline batches with milestone testing",
+    audience: "Junior college and senior secondary students",
+    points: [
+      "Chapter-wise concept reinforcement and revision mapping",
+      "Timed paper practice and score-improvement reviews",
+      "Parent updates with study-discipline checkpoints",
+    ],
+  },
+];
+
+const mockQuizQuestions: QuizQuestion[] = [
+  {
+    id: "q1",
+    question: "What is the capital city of India?",
+    options: ["Mumbai", "Kolkata", "New Delhi", "Chennai"],
+    answer: 2,
+    difficulty: "easy",
+    explanation: "New Delhi is the capital of India and the seat of the central government.",
+    category: "Indian Polity",
+  },
+  {
+    id: "q2",
+    question: "Who wrote India's national anthem, 'Jana Gana Mana'?",
+    options: ["Bankim Chandra Chattopadhyay", "Rabindranath Tagore", "Sarojini Naidu", "Subramania Bharati"],
+    answer: 1,
+    difficulty: "easy",
+    explanation: "Rabindranath Tagore composed the national anthem of India.",
+    category: "Culture",
+  },
+  {
+    id: "q3",
+    question: "Which Article of the Constitution guarantees equality before law?",
+    options: ["Article 14", "Article 19", "Article 21", "Article 32"],
+    answer: 0,
+    difficulty: "medium",
+    explanation: "Article 14 guarantees equality before law and equal protection of laws.",
+    category: "Constitution",
+  },
+  {
+    id: "q4",
+    question: "The Battle of Plassey was fought in which year?",
+    options: ["1757", "1764", "1857", "1748"],
+    answer: 0,
+    difficulty: "medium",
+    explanation: "The Battle of Plassey took place in 1757 and marked a major turning point in Indian history.",
+    category: "History",
+  },
+  {
+    id: "q5",
+    question: "Which river is often called the 'Sorrow of Bihar' because of frequent floods?",
+    options: ["Damodar", "Kosi", "Mahanadi", "Gandak"],
+    answer: 1,
+    difficulty: "medium",
+    explanation: "The Kosi River is called the Sorrow of Bihar due to its changing course and floods.",
+    category: "Geography",
+  },
+  {
+    id: "q6",
+    question: "The Right to Constitutional Remedies is included in which part of the Indian Constitution?",
+    options: ["Part II", "Part III", "Part IV", "Part IVA"],
+    answer: 1,
+    difficulty: "hard",
+    explanation: "The Right to Constitutional Remedies under Article 32 is part of Fundamental Rights in Part III.",
+    category: "Constitution",
+  },
+  {
+    id: "q7",
+    question: "Which of the following is the major greenhouse gas emitted by human activities?",
+    options: ["Helium", "Carbon Dioxide", "Argon", "Neon"],
+    answer: 1,
+    difficulty: "hard",
+    explanation: "Carbon dioxide is the major greenhouse gas released through fossil fuel use and industrial activity.",
+    category: "Science",
+  },
+  {
+    id: "q8",
+    question: "Who was the first woman Governor of an Indian state?",
+    options: ["Vijaya Lakshmi Pandit", "Sarojini Naidu", "Sucheta Kripalani", "Aruna Asaf Ali"],
+    answer: 1,
+    difficulty: "hard",
+    explanation: "Sarojini Naidu became the first woman Governor of an Indian state, Uttar Pradesh.",
+    category: "Modern India",
+  },
+  {
+    id: "q9",
+    question: "The subjects of Union, State, and Concurrent Lists are given in which Schedule of the Constitution?",
+    options: ["Fifth Schedule", "Sixth Schedule", "Seventh Schedule", "Eighth Schedule"],
+    answer: 2,
+    difficulty: "hard",
+    explanation: "The Seventh Schedule distributes legislative subjects across the Union, State, and Concurrent Lists.",
+    category: "Polity",
+  },
+  {
+    id: "q10",
+    question: "GDP stands for which of the following?",
+    options: ["Gross Domestic Product", "General Development Plan", "Growth Distribution Process", "Gross Demand Projection"],
+    answer: 0,
+    difficulty: "hard",
+    explanation: "GDP means Gross Domestic Product, a common measure of economic output.",
+    category: "Economics",
+  },
+];
+
 export function getPublicInstituteData() {
   return {
     profile: {
@@ -326,32 +682,9 @@ export function getPublicInstituteData() {
       hours: "Mon - Sat | 08:00 AM - 08:00 PM",
       specialties: ["College", "Government Exams", "Placement"],
     },
-    socialLinks: [
-      {
-        label: "WhatsApp",
-        href: "https://wa.me/919876543210?text=Hello%20SmartIQ%20Academy",
-      },
-      {
-        label: "Instagram",
-        href: "https://instagram.com/smartiqacademy",
-      },
-      {
-        label: "Facebook",
-        href: "https://facebook.com/smartiqacademy",
-      },
-      {
-        label: "LinkedIn",
-        href: "https://linkedin.com/company/smartiqacademy",
-      },
-      {
-        label: "YouTube",
-        href: "https://youtube.com/@smartiqacademy",
-      },
-      {
-        label: "X / Twitter",
-        href: "https://x.com/smartiqacademy",
-      },
-    ],
+    socialLinks,
+    contactMethods,
+    contactActions,
     whatsappHref:
       "https://wa.me/919876543210?text=Hello%20SmartIQ%20Academy",
     headlineLines: [
@@ -363,7 +696,7 @@ export function getPublicInstituteData() {
     metrics: [
       { label: "Outcome-first programs", value: "18+" },
       { label: "Role-based workflows", value: "4" },
-      { label: "Mock-first local APIs", value: "7" },
+      { label: "Mock-first local APIs", value: "8" },
       { label: "Desktop-first polish", value: "100%" },
     ],
     operationsHighlights: [
@@ -508,51 +841,12 @@ export function getPublicInstituteData() {
         metric: "03",
       },
     ],
-    detailedCourses: [
-      {
-        tagline: "Career Readiness",
-        title: "Placement Accelerator Program",
-        description:
-          "A structured placement track for aptitude, interview preparation, communication, portfolio readiness, and recruiter-facing confidence building.",
-        duration: "8 to 12 weeks",
-        mode: "Hybrid classroom + practice sessions",
-        audience: "College students and final-year aspirants",
-        points: [
-          "Aptitude practice and timed mock tests",
-          "Resume, LinkedIn, and interview mentoring",
-          "Communication, GD, and mock HR rounds",
-        ],
-      },
-      {
-        tagline: "Competitive Preparation",
-        title: "Government Exams Coaching",
-        description:
-          "Detailed exam-prep support with concepts, revision cycles, doubt resolution, weekly tests, and performance analysis for disciplined aspirants.",
-        duration: "Long-term and fast-track batches",
-        mode: "Offline core batches with revision support",
-        audience: "Government exam aspirants",
-        points: [
-          "Reasoning, quant, awareness, and language practice",
-          "Revision sprints and mock evaluation support",
-          "Mentor review and performance-based planning",
-        ],
-      },
-      {
-        tagline: "Academic Support",
-        title: "College Performance Support",
-        description:
-          "Academic guidance for concept clarity, subject coaching, assignments, and exam preparation with a student-confidence-first approach.",
-        duration: "Semester-based support",
-        mode: "Subject-wise mentoring and study support",
-        audience: "College students across streams",
-        points: [
-          "Concept strengthening for core subjects",
-          "Assignment and semester exam support",
-          "Study structure, discipline, and doubt clearing",
-        ],
-      },
-    ],
+    detailedCourses,
   };
+}
+
+export function getMockQuizQuestions() {
+  return mockQuizQuestions;
 }
 
 export function findDemoUser(email: string, password: string): SessionUser | null {
@@ -576,8 +870,18 @@ export function getCoursesForRole(role: Role) {
   return courses.filter((item) => item.audience.includes(role));
 }
 
-export function getTestsForRole(role: Role) {
-  return tests.filter((item) => item.audience.includes(role));
+export function getTestsForRole(role: Role, userId?: string) {
+  return tests.filter((item) => {
+    if (!item.audience.includes(role)) {
+      return false;
+    }
+
+    if (role === "student") {
+      return item.assignedUserIds?.includes(userId ?? "") ?? false;
+    }
+
+    return true;
+  });
 }
 
 export function getMessagesForRole(role: Role, userId?: string) {
@@ -595,7 +899,27 @@ export function getMessagesForRole(role: Role, userId?: string) {
 }
 
 export function getUsersForAdmin() {
-  return demoUsers.map(sanitizeUser);
+  return demoUsers.map(toManagedUser);
+}
+
+export function getStudentDirectory() {
+  return demoUsers.filter((item) => item.role === "student").map(toManagedUser);
+}
+
+export function getTestSubmissionsForRole(role: Role, userId?: string) {
+  if (role === "student") {
+    return testSubmissions.filter((item) => item.studentId === userId);
+  }
+
+  if (role === "educator" || role === "admin") {
+    return testSubmissions;
+  }
+
+  return [];
+}
+
+export function getTestById(id: string) {
+  return tests.find((item) => item.id === id) ?? null;
 }
 
 export function getDashboardBundle(role: Role, userId?: string) {
@@ -697,8 +1021,9 @@ export function getDashboardBundle(role: Role, userId?: string) {
     },
     permissions: rolePermissions[role],
     courses: getCoursesForRole(role).slice(0, 3),
-    tests: getTestsForRole(role).slice(0, 3),
-    messages: getMessagesForRole(role, userId).slice(0, 3),
+    tests: getTestsForRole(role, userId).slice(0, 4),
+    messages: getMessagesForRole(role, userId).slice(0, 6),
+    submissions: getTestSubmissionsForRole(role, userId).slice(0, 6),
   };
 }
 
@@ -723,6 +1048,8 @@ export function createMessageDraft(input: {
   body?: string;
   channel?: string;
   author: string;
+  audience?: Role[];
+  userIds?: string[];
 }) {
   return {
     id: `message-draft-${Date.now()}`,
@@ -731,6 +1058,9 @@ export function createMessageDraft(input: {
       input.body?.trim() ||
       `Draft message created locally by ${input.author}. Replace mock persistence with MongoDB later.`,
     channel: input.channel?.trim() || "General",
+    audience: input.audience?.length ? input.audience : ["student", "educator", "admin"],
+    userIds: input.userIds,
+    author: input.author,
     createdAt: new Date().toISOString(),
   };
 }
@@ -740,6 +1070,8 @@ export function createTestDraft(input: {
   status?: string;
   summary?: string;
   createdBy: string;
+  assignedUserIds?: string[];
+  questions?: TestQuestion[];
 }) {
   return {
     id: `test-draft-${Date.now()}`,
@@ -748,6 +1080,50 @@ export function createTestDraft(input: {
     summary:
       input.summary?.trim() ||
       `Mock test created by ${input.createdBy}. Persist this route later with MongoDB collections.`,
+    assignedUserIds: input.assignedUserIds ?? [],
+    createdBy: input.createdBy,
+    questions: input.questions ?? [],
+  };
+}
+
+export function createTestSubmissionDraft(input: {
+  testId: string;
+  studentId: string;
+  studentName: string;
+  answers: number[];
+}) {
+  const test = getTestById(input.testId);
+
+  if (!test || !test.questions?.length) {
+    return null;
+  }
+
+  const score = test.questions.reduce((total, question, index) => {
+    return total + (input.answers[index] === question.answer ? 1 : 0);
+  }, 0);
+
+  return {
+    submission: {
+      id: `submission-draft-${Date.now()}`,
+      testId: test.id,
+      studentId: input.studentId,
+      studentName: input.studentName,
+      answers: input.answers,
+      score,
+      total: test.questions.length,
+      status: "published" as const,
+      submittedAt: new Date().toISOString(),
+      publishedMessageTitle: `${test.title} result published`,
+    },
+    message: {
+      id: `result-message-${Date.now()}`,
+      title: `${test.title} result published`,
+      body: `${input.studentName} completed ${test.title} and scored ${score}/${test.questions.length}. Review the result card for explanation and follow-up guidance.`,
+      channel: "Results",
+      audience: ["student", "educator", "admin"] as Role[],
+      userIds: [input.studentId],
+      author: "Assessment Engine",
+    },
   };
 }
 
@@ -775,6 +1151,14 @@ function sanitizeUser(user: DemoUserRecord): SessionUser {
     email: user.email,
     role: user.role,
     label: user.label,
+  };
+}
+
+function toManagedUser(user: DemoUserRecord): ManagedUser {
+  return {
+    ...sanitizeUser(user),
+    program: user.program,
+    status: user.role === "guest" ? "pending" : "active",
   };
 }
 

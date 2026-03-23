@@ -4,6 +4,13 @@ import { useMemo, useState } from "react";
 
 import { demoCredentials } from "@/lib/mock-data";
 
+const roleDescriptions = {
+  guest: "Public preview access to institute content and admissions storytelling.",
+  student: "Personal learning dashboard with tests, notices, and study material.",
+  educator: "Course delivery, grading, messaging, and operational teaching controls.",
+  admin: "Account management, permissions, and institute-wide governance tools.",
+} as const;
+
 export function MockLoginForm() {
   const [selectedRole, setSelectedRole] = useState<(typeof demoCredentials)[number]["role"]>(
     "student",
@@ -52,13 +59,14 @@ export function MockLoginForm() {
   return (
     <div className="space-y-8">
       <div className="space-y-4">
-        <p className="section-label">Workspace Access</p>
+        <p className="section-label">SmartIQ Access</p>
         <h2 className="text-4xl font-semibold tracking-[-0.05em] text-[var(--color-heading)]">
-          Choose a role and enter the demo workspace
+          Sign in to the role-based workspace
         </h2>
-        <p className="max-w-xl text-sm leading-7 text-[var(--color-muted)]">
-          Each role opens a different dashboard. The selected card below is the
-          active login profile, so the journey is much clearer before you sign in.
+        <p className="max-w-2xl text-sm leading-7 text-[var(--color-muted)]">
+          The structure stays the same as our current product. What changes here is the
+          visual treatment and the clarity of role selection, inspired by a cleaner
+          educator-management interface.
         </p>
       </div>
 
@@ -79,7 +87,7 @@ export function MockLoginForm() {
               }}
               className={`rounded-[1.75rem] border p-5 text-left ${
                 isSelected
-                  ? "border-[var(--color-accent)] bg-[linear-gradient(135deg,rgba(204,154,57,0.14),rgba(117,174,226,0.12))] shadow-[0_16px_34px_rgba(88,78,42,0.12)]"
+                  ? "border-[rgba(71,105,255,0.28)] bg-[linear-gradient(135deg,rgba(71,105,255,0.12),rgba(49,182,210,0.08))] shadow-[0_18px_40px_rgba(22,32,51,0.08)]"
                   : "surface-soft border-[var(--color-border)]"
               }`}
             >
@@ -87,34 +95,40 @@ export function MockLoginForm() {
                 <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[var(--color-accent-strong)]">
                   {credential.role}
                 </p>
-                <span className="pill">{isSelected ? "Selected" : "Demo"}</span>
+                <span className="pill">{isSelected ? "Active" : "Demo"}</span>
               </div>
               <p className="mt-3 text-base font-semibold text-[var(--color-heading)]">
                 {credential.label}
               </p>
-              <p className="mt-1 text-sm text-[var(--color-muted)]">{credential.email}</p>
+              <p className="mt-2 text-sm leading-6 text-[var(--color-muted)]">
+                {roleDescriptions[credential.role]}
+              </p>
             </button>
           );
         })}
       </div>
 
-      <div className="surface-soft rounded-[2rem] p-5">
-        <p className="keyword-line">Active Role</p>
-        <p className="mt-2 text-2xl font-semibold text-[var(--color-heading)]">
-          {selectedCredential.label}
-        </p>
-        <p className="mt-2 text-sm leading-7 text-[var(--color-muted)]">
-          Email: {selectedCredential.email}
-        </p>
-        <p className="text-sm leading-7 text-[var(--color-muted)]">
-          Password: {selectedCredential.password}
-        </p>
+      <div className="surface-soft rounded-[2rem] p-6">
+        <p className="keyword-line">Selected Access</p>
+        <div className="mt-3 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+          <div>
+            <p className="text-2xl font-semibold text-[var(--color-heading)]">
+              {selectedCredential.label}
+            </p>
+            <p className="mt-2 text-sm leading-7 text-[var(--color-muted)]">
+              {selectedCredential.email}
+            </p>
+          </div>
+          <span className="rounded-full bg-[var(--color-highlight)] px-4 py-2 text-sm font-semibold text-[var(--color-accent)]">
+            {selectedCredential.password}
+          </span>
+        </div>
       </div>
 
       <form className="space-y-5" onSubmit={handleSubmit}>
         <label className="block">
           <span className="mb-2 block text-sm font-semibold text-[var(--color-heading)]">
-            Email
+            Email address
           </span>
           <input
             value={form.email}
@@ -157,7 +171,7 @@ export function MockLoginForm() {
           disabled={isPending}
           className="action-button w-full justify-center px-6 py-4 text-base disabled:cursor-not-allowed disabled:opacity-75"
         >
-          {isPending ? "Opening Dashboard..." : `Login as ${selectedCredential.label}`}
+          {isPending ? "Opening workspace..." : `Continue as ${selectedCredential.label}`}
         </button>
       </form>
     </div>

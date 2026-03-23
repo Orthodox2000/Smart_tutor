@@ -9,10 +9,10 @@ export function FloatingWhatsApp() {
       target="_blank"
       rel="noreferrer"
       aria-label="Chat with SmartIQ Academy on WhatsApp"
-      className="action-button fixed bottom-5 right-5 z-30 h-14 w-14 justify-center rounded-full text-xl shadow-[0_18px_40px_rgba(168,127,38,0.35)]"
+      className="bookmark-button fixed bottom-4 right-4 z-30 border border-white/20 bg-[#25D366] text-white shadow-[0_18px_40px_rgba(37,211,102,0.28)] sm:bottom-6 sm:right-6"
       title="Chat on WhatsApp"
     >
-      WA
+      WhatsApp
     </a>
   );
 }

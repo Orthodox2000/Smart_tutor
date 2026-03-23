@@ -28,10 +28,19 @@ export async function POST(request: Request) {
     );
   }
 
+  if (!["educator", "admin"].includes(session.role)) {
+    return NextResponse.json(
+      { error: "Only educators and admins can post institute messages." },
+      { status: 403 },
+    );
+  }
+
   const body = (await request.json()) as {
     title?: string;
     body?: string;
     channel?: string;
+    audience?: ("guest" | "student" | "educator" | "admin")[];
+    userIds?: string[];
   };
 
   const message = createMessageDraft({
@@ -39,6 +48,8 @@ export async function POST(request: Request) {
     body: body.body,
     channel: body.channel,
     author: session.name,
+    audience: body.audience,
+    userIds: body.userIds,
   });
 
   return NextResponse.json({ message }, { status: 201 });

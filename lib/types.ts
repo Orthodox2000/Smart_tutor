@@ -8,6 +8,13 @@ export type SessionUser = {
   label: string;
 };
 
+export type DemoCredential = {
+  role: Role;
+  label: string;
+  email: string;
+  password: string;
+};
+
 export type DemoUserRecord = SessionUser & {
   password: string;
   program: string;
@@ -16,6 +23,7 @@ export type DemoUserRecord = SessionUser & {
 export type ManagedUser = SessionUser & {
   program: string;
   status: "active" | "pending";
+  passwordHint?: string;
 };
 
 export type DashboardMetric = {
@@ -89,6 +97,69 @@ export type DetailedCourse = {
   points: string[];
 };
 
+export type InstituteProfile = {
+  name: string;
+  city: string;
+  address: string;
+  phone: string;
+  email: string;
+  hours: string;
+  specialties: string[];
+};
+
+export type PublicMetric = {
+  label: string;
+  value: string;
+};
+
+export type OperationsHighlight = {
+  title: string;
+  description: string;
+  tag: string;
+};
+
+export type ProgramShowcase = {
+  category: string;
+  title: string;
+  duration: string;
+  description: string;
+  focus: string[];
+};
+
+export type RoleShowcase = {
+  role: Role;
+  title: string;
+  summary: string;
+  features: string[];
+};
+
+export type MediaFeature = {
+  title: string;
+  description: string;
+};
+
+export type DesignPrinciple = {
+  title: string;
+  description: string;
+  metric: string;
+};
+
+export type PublicInstituteData = {
+  profile: InstituteProfile;
+  socialLinks: SocialLink[];
+  contactMethods: ContactMethod[];
+  contactActions: ContactAction[];
+  whatsappHref: string;
+  headlineLines: string[];
+  metrics: PublicMetric[];
+  operationsHighlights: OperationsHighlight[];
+  programs: ProgramShowcase[];
+  roles: RoleShowcase[];
+  mediaFeatures: MediaFeature[];
+  designPrinciples: DesignPrinciple[];
+  detailedCourses: DetailedCourse[];
+};
+
 export type QuizQuestion = {
   id: string;
   question: string;
@@ -103,7 +174,6 @@ export type TestQuestion = {
   id: string;
   prompt: string;
   options: string[];
-  answer: number;
 };
 
 export type TestSubmission = {
@@ -112,9 +182,30 @@ export type TestSubmission = {
   studentId: string;
   studentName: string;
   answers: number[];
-  score: number;
+  score: number | null;
   total: number;
-  status: "submitted" | "published";
+  status: "submitted" | "graded" | "published";
   submittedAt: string;
   publishedMessageTitle: string;
+  feedback?: string;
+  gradedBy?: string;
+};
+
+export type DashboardPrimaryPanel = {
+  title: string;
+  badge: string;
+  items: { title: string; description: string; meta: string }[];
+};
+
+export type DashboardBundle = {
+  roleLabel: string;
+  heroTitle: string;
+  heroDescription: string;
+  stats: DashboardMetric[];
+  primaryPanel: DashboardPrimaryPanel;
+  permissions: PermissionItem[];
+  courses: CourseItem[];
+  tests: TestItem[];
+  messages: MessageItem[];
+  submissions: TestSubmission[];
 };

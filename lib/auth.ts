@@ -1,10 +1,10 @@
 import { cookies } from "next/headers";
 import { NextResponse } from "next/server";
 
-import { findDemoUserById } from "@/lib/mock-data";
-import type { SessionUser } from "@/lib/types";
+import { findUserById } from "@/lib/data-store";
+import type { Role, SessionUser } from "@/lib/types";
 
-const SESSION_COOKIE = "smartiq_session";
+export const SESSION_COOKIE = "smart_tutor_session";
 
 export async function getSessionUser(): Promise<SessionUser | null> {
   const cookieStore = await cookies();
@@ -14,7 +14,7 @@ export async function getSessionUser(): Promise<SessionUser | null> {
     return null;
   }
 
-  return findDemoUserById(sessionCookie);
+  return findUserById(sessionCookie);
 }
 
 export function createSessionResponse(user: SessionUser) {
@@ -45,4 +45,11 @@ export function clearSessionResponse() {
   });
 
   return response;
+}
+
+export function hasAnyRole(
+  session: SessionUser | null,
+  roles: Role[],
+): session is SessionUser {
+  return Boolean(session && roles.includes(session.role));
 }

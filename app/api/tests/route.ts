@@ -1,7 +1,8 @@
 import { NextResponse } from "next/server";
 
-import { getSessionUser } from "@/lib/auth";
-import { createTestDraft, getTestsForRole } from "@/lib/mock-data";
+import { getSessionUser, hasAnyRole } from "@/lib/auth";
+import { createTest, getTestsForRole } from "@/lib/data-store";
+import { sanitizeIdList, sanitizeOptions, sanitizeTextInput, sanitizeTextareaInput } from "@/lib/validation";
 
 export async function GET() {
   const session = await getSessionUser();
@@ -14,21 +15,21 @@ export async function GET() {
   }
 
   return NextResponse.json({
-    tests: getTestsForRole(session.role, session.id),
+    tests: await getTestsForRole(session.role, session.id),
   });
 }
 
 export async function POST(request: Request) {
   const session = await getSessionUser();
 
-  if (!session || !["educator", "admin"].includes(session.role)) {
+  if (!hasAnyRole(session, ["educator", "admin"])) {
     return NextResponse.json(
       { error: "Only educators and admins can issue tests." },
       { status: 403 },
     );
   }
 
-  const body = (await request.json()) as {
+  let body: {
     title?: string;
     status?: string;
     summary?: string;
@@ -37,28 +38,56 @@ export async function POST(request: Request) {
       id?: string;
       prompt?: string;
       options?: string[];
-      answer?: number;
     }[];
   };
 
-  const test = createTestDraft({
-    title: body.title,
-    status: body.status,
-    summary: body.summary,
+  try {
+    body = (await request.json()) as {
+      title?: string;
+      status?: string;
+      summary?: string;
+      assignedUserIds?: string[];
+      questions?: {
+        id?: string;
+        prompt?: string;
+        options?: string[];
+      }[];
+    };
+  } catch {
+    return NextResponse.json({ error: "Invalid test payload." }, { status: 400 });
+  }
+
+  const title = sanitizeTextInput(body.title, 80);
+  const summary = sanitizeTextareaInput(body.summary, 220);
+  const assignedUserIds = sanitizeIdList(body.assignedUserIds, 50);
+  const questions =
+    body.questions?.map((question, index) => ({
+      id: sanitizeTextInput(question.id, 40) || `draft-question-${index + 1}`,
+      prompt: sanitizeTextInput(question.prompt, 120) || `Draft question ${index + 1}`,
+      options: sanitizeOptions(question.options),
+    })) ?? [];
+
+  if (!title || !summary || !assignedUserIds.length || !questions.length) {
+    return NextResponse.json(
+      { error: "Title, summary, students, and at least one question are required." },
+      { status: 400 },
+    );
+  }
+
+  if (questions.some((question) => ![2, 4].includes(question.options.length))) {
+    return NextResponse.json(
+      { error: "Each question must contain exactly 2 or 4 options." },
+      { status: 400 },
+    );
+  }
+
+  const test = await createTest({
+    title,
+    status: sanitizeTextInput(body.status, 30) || "Assigned",
+    summary,
     createdBy: session.name,
-    assignedUserIds: body.assignedUserIds,
-    questions: body.questions?.map((question, index) => ({
-      id: question.id?.trim() || `draft-question-${index + 1}`,
-      prompt: question.prompt?.trim() || `Draft question ${index + 1}`,
-      options:
-        question.options?.map((option) => option.trim()).filter(Boolean) ?? [
-          "Option A",
-          "Option B",
-          "Option C",
-          "Option D",
-        ],
-      answer: typeof question.answer === "number" ? question.answer : 0,
-    })),
+    assignedUserIds,
+    questions,
   });
 
   return NextResponse.json({ test }, { status: 201 });

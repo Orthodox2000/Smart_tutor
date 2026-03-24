@@ -7,9 +7,9 @@ import { ThemeProvider } from "@/components/theme-provider";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "SmartIQ Academy",
+  title: "Smart Tutor",
   description:
-    "Professional institute platform for SmartIQ Academy with role-based dashboards, local APIs, and a polished admissions experience.",
+    "Professional institute platform for Smart Tutor with role-based dashboards, local APIs, and a polished learning experience.",
 };
 
 export default function RootLayout({

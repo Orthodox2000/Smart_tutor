@@ -1,7 +1,8 @@
 import { NextResponse } from "next/server";
 
 import { getSessionUser } from "@/lib/auth";
-import { createCourseDraft, getCoursesForRole } from "@/lib/mock-data";
+import { createCourse, getCoursesForRole } from "@/lib/data-store";
+import { sanitizeTextInput, sanitizeTextareaInput } from "@/lib/validation";
 
 export async function GET() {
   const session = await getSessionUser();
@@ -9,7 +10,7 @@ export async function GET() {
 
   return NextResponse.json({
     role,
-    courses: getCoursesForRole(role),
+    courses: await getCoursesForRole(role),
   });
 }
 
@@ -29,10 +30,18 @@ export async function POST(request: Request) {
     summary?: string;
   };
 
-  const draft = createCourseDraft({
-    title: body.title,
-    schedule: body.schedule,
-    summary: body.summary,
+  const title = sanitizeTextInput(body.title, 80);
+  const schedule = sanitizeTextInput(body.schedule, 50);
+  const summary = sanitizeTextareaInput(body.summary, 220);
+
+  if (!title || !schedule || !summary) {
+    return NextResponse.json({ error: "Title, schedule, and summary are required." }, { status: 400 });
+  }
+
+  const draft = await createCourse({
+    title,
+    schedule,
+    summary,
     createdBy: session.name,
   });
 

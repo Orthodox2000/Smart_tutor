@@ -21,25 +21,25 @@ export const demoCredentials = [
   {
     role: "guest" as const,
     label: "Guest Preview",
-    email: "guest@smartiq.demo",
+    email: "guest@smarttutor.demo",
     password: "Guest@123",
   },
   {
     role: "student" as const,
     label: "Student Workspace",
-    email: "riya@smartiq.demo",
+    email: "riya@smarttutor.demo",
     password: "Student@123",
   },
   {
     role: "educator" as const,
     label: "Educator Desk",
-    email: "amit@smartiq.demo",
+    email: "amit@smarttutor.demo",
     password: "Educator@123",
   },
   {
     role: "admin" as const,
     label: "Admin Console",
-    email: "admin@smartiq.demo",
+    email: "admin@smarttutor.demo",
     password: "Admin@123",
   },
 ];
@@ -48,7 +48,7 @@ const demoUsers: DemoUserRecord[] = [
   {
     id: "guest-1",
     name: "Campus Visitor",
-    email: "guest@smartiq.demo",
+    email: "guest@smarttutor.demo",
     password: "Guest@123",
     role: "guest",
     label: "Guest Preview",
@@ -57,7 +57,7 @@ const demoUsers: DemoUserRecord[] = [
   {
     id: "student-1",
     name: "Riya Sharma",
-    email: "riya@smartiq.demo",
+    email: "riya@smarttutor.demo",
     password: "Student@123",
     role: "student",
     label: "Student Workspace",
@@ -66,7 +66,7 @@ const demoUsers: DemoUserRecord[] = [
   {
     id: "student-2",
     name: "Aarav Patil",
-    email: "aarav@smartiq.demo",
+    email: "aarav@smarttutor.demo",
     password: "Student@123",
     role: "student",
     label: "Student Workspace",
@@ -75,7 +75,7 @@ const demoUsers: DemoUserRecord[] = [
   {
     id: "student-3",
     name: "Sneha Kulkarni",
-    email: "sneha@smartiq.demo",
+    email: "sneha@smarttutor.demo",
     password: "Student@123",
     role: "student",
     label: "Student Workspace",
@@ -84,7 +84,7 @@ const demoUsers: DemoUserRecord[] = [
   {
     id: "educator-1",
     name: "Amit Deshmukh",
-    email: "amit@smartiq.demo",
+    email: "amit@smarttutor.demo",
     password: "Educator@123",
     role: "educator",
     label: "Educator Desk",
@@ -93,7 +93,7 @@ const demoUsers: DemoUserRecord[] = [
   {
     id: "educator-2",
     name: "Neha Joshi",
-    email: "neha@smartiq.demo",
+    email: "neha@smarttutor.demo",
     password: "Educator@123",
     role: "educator",
     label: "Educator Desk",
@@ -102,7 +102,7 @@ const demoUsers: DemoUserRecord[] = [
   {
     id: "admin-1",
     name: "Ankit Mali",
-    email: "admin@smartiq.demo",
+    email: "admin@smarttutor.demo",
     password: "Admin@123",
     role: "admin",
     label: "Admin Console",
@@ -191,7 +191,7 @@ const courses: CourseItem[] = [
     title: "Admissions Showcase Track",
     schedule: "Public Access",
     summary:
-      "A preview of SmartIQ pathways, faculty quality, campus support, and outcome-focused training philosophy.",
+      "A preview of Smart Tutor pathways, faculty quality, campus support, and outcome-focused learning philosophy.",
     audience: ["guest", "student", "educator", "admin"],
   },
 ];
@@ -201,13 +201,11 @@ const placementMcq: TestQuestion[] = [
     id: "pt-q1",
     prompt: "Which data structure works on First In First Out principle?",
     options: ["Stack", "Queue", "Tree", "Graph"],
-    answer: 1,
   },
   {
     id: "pt-q2",
     prompt: "Which communication skill is most important during HR interviews?",
     options: ["Memorizing scripts", "Clarity and confidence", "Speaking very fast", "Avoiding examples"],
-    answer: 1,
   },
 ];
 
@@ -216,13 +214,11 @@ const polityMcq: TestQuestion[] = [
     id: "gk-q1",
     prompt: "Who appoints the Prime Minister of India?",
     options: ["Lok Sabha Speaker", "President", "Chief Justice of India", "Cabinet Secretary"],
-    answer: 1,
   },
   {
     id: "gk-q2",
     prompt: "Which house of Parliament is called the Upper House?",
     options: ["Lok Sabha", "Rajya Sabha", "Vidhan Sabha", "Legislative Council"],
-    answer: 1,
   },
 ];
 
@@ -320,6 +316,8 @@ const testSubmissions: TestSubmission[] = [
     status: "published",
     submittedAt: "2026-03-22T08:30:00.000Z",
     publishedMessageTitle: "Weekly Concept Check result published",
+    feedback: "Strong attempt. Keep the same pace in the next revision round.",
+    gradedBy: "Neha Joshi",
   },
 ];
 
@@ -417,37 +415,37 @@ const dashboardStats: Record<Role, DashboardMetric[]> = {
 const socialLinks: SocialLink[] = [
   {
     label: "WhatsApp",
-    href: "https://wa.me/919876543210?text=Hello%20SmartIQ%20Academy",
+    href: "https://wa.me/919876543210?text=Hello%20Smart%20Tutor",
     color: "#25D366",
     glow: "rgba(37, 211, 102, 0.32)",
   },
   {
     label: "Instagram",
-    href: "https://instagram.com/smartiqacademy",
+    href: "https://instagram.com/smarttutor",
     color: "#E4405F",
     glow: "rgba(228, 64, 95, 0.28)",
   },
   {
     label: "Facebook",
-    href: "https://facebook.com/smartiqacademy",
+    href: "https://facebook.com/smarttutor",
     color: "#1877F2",
     glow: "rgba(24, 119, 242, 0.28)",
   },
   {
     label: "LinkedIn",
-    href: "https://linkedin.com/company/smartiqacademy",
+    href: "https://linkedin.com/company/smarttutor",
     color: "#0A66C2",
     glow: "rgba(10, 102, 194, 0.28)",
   },
   {
     label: "YouTube",
-    href: "https://youtube.com/@smartiqacademy",
+    href: "https://youtube.com/@smarttutor",
     color: "#FF0000",
     glow: "rgba(255, 0, 0, 0.24)",
   },
   {
     label: "X / Twitter",
-    href: "https://x.com/smartiqacademy",
+    href: "https://x.com/smarttutor",
     color: "#111827",
     glow: "rgba(17, 24, 39, 0.22)",
   },
@@ -474,14 +472,14 @@ const contactMethods: ContactMethod[] = [
   },
   {
     label: "Admissions Mail",
-    value: "admissions@smartiqacademy.local",
-    href: "mailto:admissions@smartiqacademy.local",
+    value: "admissions@smarttutor.local",
+    href: "mailto:admissions@smarttutor.local",
     description: "Course brochures, fee details, and program-specific discussions.",
   },
   {
     label: "Student Mail",
-    value: "support@smartiqacademy.local",
-    href: "mailto:support@smartiqacademy.local",
+    value: "support@smarttutor.local",
+    href: "mailto:support@smarttutor.local",
     description: "Student access help, result queries, and learning-material requests.",
   },
   {
@@ -500,17 +498,17 @@ const contactActions: ContactAction[] = [
   },
   {
     label: "WhatsApp Counselling",
-    href: "https://wa.me/919876543210?text=Hello%20SmartIQ%20Academy",
+    href: "https://wa.me/919876543210?text=Hello%20Smart%20Tutor",
     style: "primary",
   },
   {
-    label: "Email SmartIQ",
-    href: "mailto:admissions@smartiqacademy.local",
+    label: "Email Smart Tutor",
+    href: "mailto:admissions@smarttutor.local",
     style: "secondary",
   },
   {
     label: "Campus Visit Request",
-    href: "mailto:hello@smartiqacademy.local?subject=Campus%20Visit%20Request",
+    href: "mailto:hello@smarttutor.local?subject=Campus%20Visit%20Request",
     style: "secondary",
   },
 ];
@@ -674,11 +672,11 @@ const mockQuizQuestions: QuizQuestion[] = [
 export function getPublicInstituteData() {
   return {
     profile: {
-      name: "SmartIQ Academy",
+      name: "Smart Tutor",
       city: "Vashi",
       address: "Sector 17, Vashi, Navi Mumbai",
       phone: "+91 98765 43210",
-      email: "hello@smartiqacademy.local",
+      email: "hello@smarttutor.local",
       hours: "Mon - Sat | 08:00 AM - 08:00 PM",
       specialties: ["College", "Government Exams", "Placement"],
     },
@@ -686,7 +684,7 @@ export function getPublicInstituteData() {
     contactMethods,
     contactActions,
     whatsappHref:
-      "https://wa.me/919876543210?text=Hello%20SmartIQ%20Academy",
+      "https://wa.me/919876543210?text=Hello%20Smart%20Tutor",
     headlineLines: [
       "Structured learning. Guided growth. Consistent outcomes.",
       "College academics, government exams, and placements under one roof.",
@@ -758,7 +756,7 @@ export function getPublicInstituteData() {
         role: "guest" as const,
         title: "Public visitor",
         summary:
-          "Guests browse the institute story, discover programs, and understand SmartIQ before formal onboarding.",
+          "Guests browse the institute story, discover programs, and understand Smart Tutor before formal onboarding.",
         features: [
           "Landing page access",
           "Featured program browsing",
@@ -837,7 +835,7 @@ export function getPublicInstituteData() {
       {
         title: "Colorful, not noisy",
         description:
-          "Accent blue and warm orange keep the interface energetic while the base palette stays disciplined.",
+          "Violet accents and soft grayscale surfaces keep the interface energetic while the base palette stays disciplined.",
         metric: "03",
       },
     ],
@@ -929,7 +927,7 @@ export function getDashboardBundle(role: Role, userId?: string) {
     guest: {
       title: "Guest Preview Workspace",
       description:
-        "This view shows how the product introduces SmartIQ Academy before a learner or staff member is fully onboarded.",
+        "This view shows how the product introduces Smart Tutor before a learner or staff member is fully onboarded.",
     },
     student: {
       title: `Welcome back${user ? `, ${user.name.split(" ")[0]}` : ""}`,
@@ -944,7 +942,7 @@ export function getDashboardBundle(role: Role, userId?: string) {
     admin: {
       title: `Admin Command Center${user ? ` | ${user.name}` : ""}`,
       description:
-        "Manage access, guide operations, and maintain consistent permissions across the full SmartIQ Academy platform.",
+        "Manage access, guide operations, and maintain consistent permissions across the full Smart Tutor platform.",
     },
   };
 
@@ -1098,10 +1096,6 @@ export function createTestSubmissionDraft(input: {
     return null;
   }
 
-  const score = test.questions.reduce((total, question, index) => {
-    return total + (input.answers[index] === question.answer ? 1 : 0);
-  }, 0);
-
   return {
     submission: {
       id: `submission-draft-${Date.now()}`,
@@ -1109,20 +1103,46 @@ export function createTestSubmissionDraft(input: {
       studentId: input.studentId,
       studentName: input.studentName,
       answers: input.answers,
-      score,
+      score: null,
       total: test.questions.length,
-      status: "published" as const,
+      status: "submitted" as const,
       submittedAt: new Date().toISOString(),
-      publishedMessageTitle: `${test.title} result published`,
+      publishedMessageTitle: `${test.title} pending review`,
+    },
+  };
+}
+
+export function createGradedSubmissionDraft(input: {
+  submissionId: string;
+  score: number;
+  feedback?: string;
+  gradedBy: string;
+}) {
+  const submission = testSubmissions.find((item) => item.id === input.submissionId);
+
+  if (!submission) {
+    return null;
+  }
+
+  return {
+    submission: {
+      ...submission,
+      score: input.score,
+      status: "published" as const,
+      feedback:
+        input.feedback?.trim() ||
+        `Result reviewed and published by ${input.gradedBy}.`,
+      gradedBy: input.gradedBy,
+      publishedMessageTitle: `${submission.studentName} result published`,
     },
     message: {
       id: `result-message-${Date.now()}`,
-      title: `${test.title} result published`,
-      body: `${input.studentName} completed ${test.title} and scored ${score}/${test.questions.length}. Review the result card for explanation and follow-up guidance.`,
+      title: `${submission.studentName} result published`,
+      body: `${submission.studentName}'s test review has been completed and the result is now available on the board.`,
       channel: "Results",
       audience: ["student", "educator", "admin"] as Role[],
-      userIds: [input.studentId],
-      author: "Assessment Engine",
+      userIds: [submission.studentId],
+      author: input.gradedBy,
     },
   };
 }
@@ -1131,14 +1151,37 @@ export function createUserDraft(input: {
   name?: string;
   email?: string;
   role?: string;
+  password?: string;
+  program?: string;
+  status?: "active" | "pending";
 }) {
   const role = normalizeRole(input.role);
+  const defaultPassword =
+    input.password?.trim() ||
+    (role === "admin"
+      ? "Admin@123"
+      : role === "educator"
+        ? "Educator@123"
+        : role === "student"
+          ? "Student@123"
+          : "Guest@123");
 
   return {
     id: `user-draft-${Date.now()}`,
-    name: input.name?.trim() || "New SmartIQ User",
-    email: input.email?.trim().toLowerCase() || "new-user@smartiq.demo",
+    name: input.name?.trim() || "New Smart Tutor User",
+    email: input.email?.trim().toLowerCase() || "new-user@smarttutor.demo",
     role,
+    label:
+      role === "admin"
+        ? "Admin Console"
+        : role === "educator"
+          ? "Educator Desk"
+          : role === "student"
+            ? "Student Workspace"
+            : "Guest Preview",
+    program: input.program?.trim() || "New Registration",
+    passwordHint: defaultPassword,
+    status: input.status ?? (role === "guest" ? "pending" : "active"),
     permissions: rolePermissions[role],
     createdAt: new Date().toISOString(),
   };
@@ -1159,6 +1202,7 @@ function toManagedUser(user: DemoUserRecord): ManagedUser {
     ...sanitizeUser(user),
     program: user.program,
     status: user.role === "guest" ? "pending" : "active",
+    passwordHint: user.password,
   };
 }
 
@@ -1168,4 +1212,68 @@ function normalizeRole(input?: string): Role {
   }
 
   return "guest";
+}
+
+export function getTemplateSeedData() {
+  return {
+    content: [
+      {
+        _id: "public-site",
+        ...getPublicInstituteData(),
+      },
+      {
+        _id: "dashboard-config",
+        templates: {
+          guest: {
+            roleLabel: "Guest Access",
+            heroTitle: "Guest Preview Workspace",
+            heroDescription:
+              "This view shows how the product introduces Smart Tutor before a learner or staff member is fully onboarded.",
+            stats: dashboardStats.guest,
+            primaryPanel: getDashboardBundle("guest").primaryPanel,
+            permissions: rolePermissions.guest,
+          },
+          student: {
+            roleLabel: "Student Workspace",
+            heroTitle: "Welcome back",
+            heroDescription:
+              "Your dashboard groups upcoming tests, study materials, and personal communication so academic progress feels organized.",
+            stats: dashboardStats.student,
+            primaryPanel: getDashboardBundle("student").primaryPanel,
+            permissions: rolePermissions.student,
+          },
+          educator: {
+            roleLabel: "Educator Desk",
+            heroTitle: "Educator Console",
+            heroDescription:
+              "Create assessments, manage active batches, coordinate notices, and keep student delivery on track from one view.",
+            stats: dashboardStats.educator,
+            primaryPanel: getDashboardBundle("educator").primaryPanel,
+            permissions: rolePermissions.educator,
+          },
+          admin: {
+            roleLabel: "Admin Console",
+            heroTitle: "Admin Command Center",
+            heroDescription:
+              "Manage access, guide operations, and maintain consistent permissions across the full Smart Tutor platform.",
+            stats: dashboardStats.admin,
+            primaryPanel: getDashboardBundle("admin").primaryPanel,
+            permissions: rolePermissions.admin,
+          },
+        },
+      },
+    ],
+    users: demoUsers.map((user) => ({
+      ...user,
+      status: user.role === "guest" ? "pending" : "active",
+      permissions: rolePermissions[user.role],
+      createdAt: "2026-03-24T00:00:00.000Z",
+      updatedAt: "2026-03-24T00:00:00.000Z",
+    })),
+    courses,
+    tests,
+    messages,
+    submissions: testSubmissions,
+    quizQuestions: mockQuizQuestions,
+  };
 }

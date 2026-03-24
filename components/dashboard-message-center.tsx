@@ -2,29 +2,36 @@
 
 import { useState } from "react";
 
-import type { MessageItem, Role, SessionUser } from "@/lib/types";
+import type { ManagedUser, MessageItem, Role, SessionUser } from "@/lib/types";
 
 type DashboardMessageCenterProps = {
   session: SessionUser | null;
   role: Role;
-  initialMessages: MessageItem[];
+  messages: MessageItem[];
+  studentDirectory: ManagedUser[];
+  onMessagesChange: (messages: MessageItem[]) => void;
 };
 
 export function DashboardMessageCenter({
   session,
   role,
-  initialMessages,
+  messages,
+  studentDirectory,
+  onMessagesChange,
 }: DashboardMessageCenterProps) {
-  const [messages, setMessages] = useState(initialMessages);
   const [title, setTitle] = useState("");
   const [body, setBody] = useState("");
   const [channel, setChannel] = useState(role === "admin" ? "Admin Board" : "Faculty Board");
-  const [target, setTarget] = useState("student");
+  const [targetMode, setTargetMode] = useState<"everyone" | "selected-students">("everyone");
+  const [selectedStudentIds, setSelectedStudentIds] = useState<string[]>([]);
   const [status, setStatus] = useState("");
 
   const canPost = role === "educator" || role === "admin";
 
   async function handlePublish() {
+    const targetAudience =
+      role === "admin" ? ["student", "educator", "admin"] : ["student", "educator", "admin"];
+
     const response = await fetch("/api/messages", {
       method: "POST",
       credentials: "same-origin",
@@ -33,19 +40,23 @@ export function DashboardMessageCenter({
         title,
         body,
         channel,
-        audience: target === "educator" ? ["educator", "admin"] : ["student", "educator", "admin"],
+        audience: targetAudience,
+        targetMode,
+        userIds: targetMode === "selected-students" ? selectedStudentIds : undefined,
       }),
     });
 
     if (!response.ok) {
-      setStatus("Message could not be published.");
+      const payload = (await response.json()) as { error?: string };
+      setStatus(payload.error ?? "Message could not be published.");
       return;
     }
 
     const data = (await response.json()) as { message: MessageItem };
-    setMessages((current) => [data.message, ...current]);
+    onMessagesChange([data.message, ...messages]);
     setTitle("");
     setBody("");
+    setSelectedStudentIds([]);
     setStatus("Message board updated.");
   }
 
@@ -87,14 +98,45 @@ export function DashboardMessageCenter({
                   className="surface-soft rounded-2xl px-4 py-3 text-sm text-[var(--color-heading)] outline-none"
                 />
                 <select
-                  value={target}
-                  onChange={(event) => setTarget(event.target.value)}
+                  value={targetMode}
+                  onChange={(event) =>
+                    setTargetMode(event.target.value as "everyone" | "selected-students")
+                  }
                   className="surface-soft rounded-2xl px-4 py-3 text-sm text-[var(--color-heading)] outline-none"
                 >
-                  <option value="student">Student board</option>
-                  <option value="educator">Faculty board</option>
+                  <option value="everyone">Send to everyone</option>
+                  <option value="selected-students">Send to selected students</option>
                 </select>
               </div>
+              {targetMode === "selected-students" ? (
+                <div className="rounded-3xl border border-[var(--color-border)] p-4">
+                  <p className="text-sm font-semibold text-[var(--color-heading)]">
+                    Target registered students
+                  </p>
+                  <div className="mt-3 grid gap-3 sm:grid-cols-2">
+                    {studentDirectory.map((student) => (
+                      <label
+                        key={student.id}
+                        className="surface rounded-2xl px-4 py-3 text-sm text-[var(--color-heading)]"
+                      >
+                        <input
+                          type="checkbox"
+                          checked={selectedStudentIds.includes(student.id)}
+                          onChange={(event) =>
+                            setSelectedStudentIds((current) =>
+                              event.target.checked
+                                ? [...current, student.id]
+                                : current.filter((item) => item !== student.id),
+                            )
+                          }
+                          className="mr-3"
+                        />
+                        {student.name}
+                      </label>
+                    ))}
+                  </div>
+                </div>
+              ) : null}
               <button type="button" onClick={handlePublish} className="action-button px-6 py-4">
                 Publish Message
               </button>

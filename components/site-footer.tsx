@@ -1,10 +1,10 @@
 import Link from "next/link";
 
 import { LiveClock } from "@/components/live-clock";
-import { getPublicInstituteData } from "@/lib/mock-data";
+import { getPublicInstituteData } from "@/lib/data-store";
 
-export function SiteFooter() {
-  const data = getPublicInstituteData();
+export async function SiteFooter() {
+  const data = await getPublicInstituteData();
 
   return (
     <footer className="section-shell pb-8 pt-6">
@@ -12,11 +12,11 @@ export function SiteFooter() {
         <div className="grid gap-6 lg:grid-cols-[1fr_0.85fr_0.9fr]">
           <div>
             <Link href="/" className="text-2xl font-semibold tracking-[-0.05em] text-[var(--color-heading)]">
-              SmartIQ
+              Smart Tutor
             </Link>
             <p className="mt-4 max-w-md text-sm leading-7 text-[var(--color-muted)]">
-              SmartIQ Academy is designed as a polished institute platform for
-              admissions, student learning, educator workflows, and admin
+              Smart Tutor is designed as a polished learning platform for
+              admissions, student progress, educator workflows, and admin
               control from one consistent interface.
             </p>
             <div className="mt-5 grid gap-3 sm:grid-cols-2">

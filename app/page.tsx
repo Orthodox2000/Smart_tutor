@@ -1,17 +1,19 @@
 import Link from "next/link";
 
 import { LiveClock } from "@/components/live-clock";
-import { getPublicInstituteData } from "@/lib/mock-data";
+import { getPublicInstituteData } from "@/lib/data-store";
+
+export const dynamic = "force-dynamic";
 
 const roleAccentMap = {
-  guest: "from-amber-50 to-white",
-  student: "from-yellow-50 to-white",
-  educator: "from-yellow-50 to-white",
-  admin: "from-orange-50 to-white",
+  guest: "from-violet-50 to-white",
+  student: "from-violet-50 to-white",
+  educator: "from-violet-50 to-white",
+  admin: "from-violet-50 to-white",
 } as const;
 
-export default function Home() {
-  const data = getPublicInstituteData();
+export default async function Home() {
+  const data = await getPublicInstituteData();
 
   return (
     <main className="relative overflow-hidden pb-16 pt-8">
@@ -22,12 +24,12 @@ export default function Home() {
         <div className="space-y-7 text-center lg:text-left"> 
           <div className="surface-soft inline-flex items-center justify-center gap-2 rounded-full px-4 py-2 text-sm text-[var(--color-muted)] lg:justify-start">
             <span className="h-2.5 w-2.5 rounded-full bg-[var(--color-accent)]" />
-            Admissions | Preparation | Placement | Faculty Operations
+            Admissions | Preparation | Placement | Faculty Operations 
           </div>
 
           <div className="surface-soft inline-flex items-center justify-center gap-2 rounded-full ml-2 px-4 py-2 text-sm text-[var(--color-muted)] lg:justify-start">
             <span className="h-2.5 w-2.5 rounded-full bg-[var(--color-accent)]" />
-           #1 Insititute in Vashi
+            Trusted learning platform in Vashi
           </div> 
 
           <div className="space-y-5">
@@ -35,13 +37,12 @@ export default function Home() {
               Vashi | College Support | Government Exams | Placement Training
             </p>
             <h1 className="mx-auto max-w-5xl text-5xl font-semibold leading-[1.02] tracking-[-0.06em] text-[var(--color-heading)] sm:text-6xl xl:mx-0 xl:text-7xl">
-              SmartIQ Academy helps students, educators, and institute leadership
-              work from one clean digital campus.
+              Smart Tutor helps students, educators, and academic teams work from one clean digital campus.
             </h1>
             <p className="mx-auto max-w-2xl text-lg leading-8 text-[var(--color-muted)] xl:mx-0">
-              A professional education platform for admissions storytelling,
+              A professional learning platform for admissions storytelling,
               student dashboards, educator workflows, tests, notices, and admin
-              access control with a polished desktop-first experience.
+              access control with a cleaner community-first experience.
             </p>
           </div>
 
@@ -117,7 +118,7 @@ export default function Home() {
           <p className="section-label">Program Portfolio</p>
           <h2 className="section-title">Designed for outcomes across every learner journey</h2>
           <p className="mx-auto mt-4 max-w-3xl text-sm leading-7 text-[var(--color-muted)] lg:mx-0">
-            SmartIQ Academy brings together academic support, competitive exam
+            Smart Tutor brings together academic support, competitive exam
             training, placement preparation, and operations planning in a single,
             detailed public experience.
           </p>
@@ -211,7 +212,7 @@ export default function Home() {
           <article className="surface rounded-[2rem] p-7 text-center lg:text-left">
             <p className="section-label">Clean Desktop Spacing</p>
             <h2 className="section-title">
-              Creamy surfaces, gold highlights, and blue accents without overwhelming the page
+              White shells, soft gray spacing, and violet accents inspired by the new dashboard design
             </h2>
             <div className="mt-8 grid gap-4">
               {data.designPrinciples.map((principle) => (

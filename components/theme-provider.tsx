@@ -23,7 +23,7 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     const documentTheme =
       document.documentElement.dataset.theme === "dark" ? "dark" : "light";
-    const storedTheme = window.localStorage.getItem("smartiq-theme");
+    const storedTheme = window.localStorage.getItem("smart-tutor-theme");
 
     if (storedTheme === "light" || storedTheme === "dark") {
       setTheme(storedTheme);
@@ -67,5 +67,5 @@ export function useTheme() {
 function applyTheme(theme: Theme) {
   document.documentElement.dataset.theme = theme;
   document.documentElement.style.colorScheme = theme;
-  window.localStorage.setItem("smartiq-theme", theme);
+  window.localStorage.setItem("smart-tutor-theme", theme);
 }

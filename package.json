@@ -1,11 +1,12 @@
 {
-  "name": "smartiq",
+  "name": "smart-tutor",
   "version": "0.1.0",
   "private": true,
   "scripts": {
     "dev": "next dev",
     "build": "next build",
-    "start": "next start"
+    "start": "next start",
+    "bootstrap:mongo": "node scripts/bootstrap-mongo.mjs"
   },
   "dependencies": {
     "mongodb": "^7.1.0",

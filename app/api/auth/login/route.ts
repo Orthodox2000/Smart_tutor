@@ -1,16 +1,26 @@
 import { NextResponse } from "next/server";
 
 import { createSessionResponse } from "@/lib/auth";
-import { findDemoUser } from "@/lib/mock-data";
+import { findUserByCredentials } from "@/lib/data-store";
+import { sanitizeEmailInput, sanitizePasswordInput, validateEmailFormat } from "@/lib/validation";
 
 export async function POST(request: Request) {
-  const body = (await request.json()) as {
+  let body: {
     email?: string;
     password?: string;
   };
 
-  const email = body.email?.trim().toLowerCase();
-  const password = body.password?.trim();
+  try {
+    body = (await request.json()) as {
+      email?: string;
+      password?: string;
+    };
+  } catch {
+    return NextResponse.json({ error: "Invalid login payload." }, { status: 400 });
+  }
+
+  const email = sanitizeEmailInput(body.email);
+  const password = sanitizePasswordInput(body.password);
 
   if (!email || !password) {
     return NextResponse.json(
@@ -19,7 +29,14 @@ export async function POST(request: Request) {
     );
   }
 
-  const user = findDemoUser(email, password);
+  if (!validateEmailFormat(email)) {
+    return NextResponse.json(
+      { error: "Enter a valid email address." },
+      { status: 400 },
+    );
+  }
+
+  const user = await findUserByCredentials(email, password);
 
   if (!user) {
     return NextResponse.json(

@@ -1,10 +1,12 @@
 import Link from "next/link";
 
 import { CourseCatalog } from "@/components/course-catalog";
-import { getPublicInstituteData } from "@/lib/mock-data";
+import { getPublicInstituteData } from "@/lib/data-store";
 
-export default function CoursesPage() {
-  const data = getPublicInstituteData();
+export const dynamic = "force-dynamic";
+
+export default async function CoursesPage() {
+  const data = await getPublicInstituteData();
 
   return (
     <main className="section-shell pb-16 pt-8">
@@ -12,7 +14,7 @@ export default function CoursesPage() {
         <div className="max-w-4xl text-center lg:text-left">
           <p className="section-label">Courses Offered</p>
           <h1 className="section-title">
-            SmartIQ pathways arranged as a clean course grid for faster admissions browsing
+            Smart Tutor pathways arranged as a clean course grid for faster admissions browsing
           </h1>
           <p className="mt-4 text-sm leading-7 text-[var(--color-muted)]">
             Compare placement, government exam, academic support, and higher-secondary programs at a glance.

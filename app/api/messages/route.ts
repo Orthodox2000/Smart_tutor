@@ -1,7 +1,8 @@
 import { NextResponse } from "next/server";
 
-import { getSessionUser } from "@/lib/auth";
-import { createMessageDraft, getMessagesForRole } from "@/lib/mock-data";
+import { getSessionUser, hasAnyRole } from "@/lib/auth";
+import { createMessage, getMessagesForRole } from "@/lib/data-store";
+import { sanitizeIdList, sanitizeTextInput, sanitizeTextareaInput } from "@/lib/validation";
 
 export async function GET() {
   const session = await getSessionUser();
@@ -14,7 +15,7 @@ export async function GET() {
   }
 
   return NextResponse.json({
-    messages: getMessagesForRole(session.role, session.id),
+    messages: await getMessagesForRole(session.role, session.id),
   });
 }
 
@@ -28,28 +29,61 @@ export async function POST(request: Request) {
     );
   }
 
-  if (!["educator", "admin"].includes(session.role)) {
+  if (!hasAnyRole(session, ["educator", "admin"])) {
     return NextResponse.json(
       { error: "Only educators and admins can post institute messages." },
       { status: 403 },
     );
   }
 
-  const body = (await request.json()) as {
+  let body: {
     title?: string;
     body?: string;
     channel?: string;
     audience?: ("guest" | "student" | "educator" | "admin")[];
     userIds?: string[];
+    targetMode?: "everyone" | "selected-students";
   };
 
-  const message = createMessageDraft({
-    title: body.title,
-    body: body.body,
-    channel: body.channel,
+  try {
+    body = (await request.json()) as {
+      title?: string;
+      body?: string;
+      channel?: string;
+      audience?: ("guest" | "student" | "educator" | "admin")[];
+      userIds?: string[];
+      targetMode?: "everyone" | "selected-students";
+    };
+  } catch {
+    return NextResponse.json({ error: "Invalid message payload." }, { status: 400 });
+  }
+
+  const title = sanitizeTextInput(body.title, 80);
+  const content = sanitizeTextareaInput(body.body, 280);
+  const channel = sanitizeTextInput(body.channel, 40);
+  const userIds = sanitizeIdList(body.userIds, 50);
+
+  if (!title || !content || !channel) {
+    return NextResponse.json(
+      { error: "Title, message body, and channel are required." },
+      { status: 400 },
+    );
+  }
+
+  if (body.targetMode === "selected-students" && !userIds.length) {
+    return NextResponse.json(
+      { error: "Select at least one registered student for a targeted message." },
+      { status: 400 },
+    );
+  }
+
+  const message = await createMessage({
+    title,
+    body: content,
+    channel,
     author: session.name,
     audience: body.audience,
-    userIds: body.userIds,
+    userIds,
   });
 
   return NextResponse.json({ message }, { status: 201 });

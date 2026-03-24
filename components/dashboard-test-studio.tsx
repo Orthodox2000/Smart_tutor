@@ -8,17 +8,25 @@ type DashboardTestStudioProps = {
   session: SessionUser | null;
   role: Role;
   initialTests: TestItem[];
-  initialSubmissions: TestSubmission[];
+  submissions: TestSubmission[];
   studentDirectory: ManagedUser[];
-  initialMessages?: MessageItem[];
+  onSubmissionsChange: (submissions: TestSubmission[]) => void;
+  onMessagePublished: (message: MessageItem) => void;
 };
 
-function createQuestion(index: number) {
+type DraftQuestion = {
+  id: string;
+  prompt: string;
+  options: string[];
+  optionCount: 2 | 4;
+};
+
+function createQuestion(index: number, optionCount: 2 | 4 = 4): DraftQuestion {
   return {
     id: `draft-question-${index + 1}`,
     prompt: "",
     options: ["", "", "", ""],
-    answer: 0,
+    optionCount,
   };
 }
 
@@ -26,17 +34,21 @@ export function DashboardTestStudio({
   session,
   role,
   initialTests,
-  initialSubmissions,
+  submissions,
   studentDirectory,
+  onSubmissionsChange,
+  onMessagePublished,
 }: DashboardTestStudioProps) {
   const [tests, setTests] = useState(initialTests);
-  const [submissions, setSubmissions] = useState(initialSubmissions);
   const [title, setTitle] = useState("");
   const [summary, setSummary] = useState("");
   const [selectedStudents, setSelectedStudents] = useState<string[]>([]);
-  const [questions, setQuestions] = useState([createQuestion(0), createQuestion(1)]);
+  const [questions, setQuestions] = useState<DraftQuestion[]>([createQuestion(0, 4)]);
   const [activeTestId, setActiveTestId] = useState<string | null>(null);
   const [answers, setAnswers] = useState<number[]>([]);
+  const [gradingSubmissionId, setGradingSubmissionId] = useState<string | null>(null);
+  const [gradeScore, setGradeScore] = useState("");
+  const [gradeFeedback, setGradeFeedback] = useState("");
   const [status, setStatus] = useState("");
 
   const assignedTests = useMemo(() => {
@@ -48,6 +60,9 @@ export function DashboardTestStudio({
   }, [role, session, tests]);
 
   const activeTest = tests.find((item) => item.id === activeTestId) ?? null;
+  const pendingSubmissions = submissions.filter((item) => item.status === "submitted");
+  const gradingSubmission = submissions.find((item) => item.id === gradingSubmissionId) ?? null;
+  const gradingTest = tests.find((item) => item.id === gradingSubmission?.testId) ?? null;
 
   async function handleCreateTest() {
     const response = await fetch("/api/tests", {
@@ -59,7 +74,11 @@ export function DashboardTestStudio({
         summary,
         status: "Assigned",
         assignedUserIds: selectedStudents,
-        questions,
+        questions: questions.map((question) => ({
+          id: question.id,
+          prompt: question.prompt,
+          options: question.options.slice(0, question.optionCount),
+        })),
       }),
     });
 
@@ -73,8 +92,8 @@ export function DashboardTestStudio({
     setTitle("");
     setSummary("");
     setSelectedStudents([]);
-    setQuestions([createQuestion(0), createQuestion(1)]);
-    setStatus("Targeted test created.");
+    setQuestions([createQuestion(0, 4)]);
+    setStatus("Targeted MCQ test created.");
   }
 
   async function handleSubmitTest() {
@@ -98,10 +117,42 @@ export function DashboardTestStudio({
     }
 
     const data = (await response.json()) as { submission: TestSubmission };
-    setSubmissions((current) => [data.submission, ...current]);
+    onSubmissionsChange([data.submission, ...submissions]);
     setActiveTestId(null);
     setAnswers([]);
-    setStatus("Submission returned to the creator and result published.");
+    setStatus("Submission sent for faculty review.");
+  }
+
+  async function handleGradeSubmission() {
+    if (!gradingSubmissionId) {
+      return;
+    }
+
+    const response = await fetch("/api/test-submissions", {
+      method: "PATCH",
+      credentials: "same-origin",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        submissionId: gradingSubmissionId,
+        score: Number(gradeScore),
+        feedback: gradeFeedback,
+      }),
+    });
+
+    if (!response.ok) {
+      setStatus("Submission could not be graded.");
+      return;
+    }
+
+    const data = (await response.json()) as { submission: TestSubmission; message: MessageItem };
+    onSubmissionsChange(
+      submissions.map((item) => (item.id === gradingSubmissionId ? data.submission : item)),
+    );
+    onMessagePublished(data.message);
+    setGradingSubmissionId(null);
+    setGradeScore("");
+    setGradeFeedback("");
+    setStatus("Result graded and published to the student board.");
   }
 
   if (role === "student") {
@@ -183,7 +234,7 @@ export function DashboardTestStudio({
               </div>
             ) : (
               <p className="text-sm leading-6 text-[var(--color-muted)]">
-                Open any assigned test to answer MCQs and return the scored response to the educator or admin who created it.
+                Open any assigned test to answer 2-option or 4-option MCQs and send the response back for manual faculty review.
               </p>
             )}
             {status ? <p className="mt-4 text-sm font-semibold text-[var(--color-heading)]">{status}</p> : null}
@@ -199,7 +250,7 @@ export function DashboardTestStudio({
         <div>
           <p className="section-label">Test Studio</p>
           <h2 className="mt-3 text-2xl font-semibold tracking-[-0.04em] text-[var(--color-heading)]">
-            Create targeted MCQ tests
+            Create MCQ tests and grade manually
           </h2>
         </div>
         <span className="pill">{studentDirectory.length} students</span>
@@ -243,9 +294,28 @@ export function DashboardTestStudio({
                 ))}
               </div>
             </div>
+
             {questions.map((question, index) => (
               <div key={question.id} className="rounded-3xl border border-[var(--color-border)] p-4">
-                <p className="text-sm font-semibold text-[var(--color-heading)]">Question {index + 1}</p>
+                <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+                  <p className="text-sm font-semibold text-[var(--color-heading)]">Question {index + 1}</p>
+                  <select
+                    value={question.optionCount}
+                    onChange={(event) =>
+                      setQuestions((current) =>
+                        current.map((item, itemIndex) =>
+                          itemIndex === index
+                            ? { ...item, optionCount: Number(event.target.value) as 2 | 4 }
+                            : item,
+                        ),
+                      )
+                    }
+                    className="surface-soft rounded-2xl px-4 py-2 text-sm text-[var(--color-heading)] outline-none"
+                  >
+                    <option value={2}>2 options</option>
+                    <option value={4}>4 options</option>
+                  </select>
+                </div>
                 <input
                   value={question.prompt}
                   onChange={(event) =>
@@ -258,12 +328,37 @@ export function DashboardTestStudio({
                   placeholder="Question prompt"
                   className="surface-soft mt-3 w-full rounded-2xl px-4 py-3 text-sm text-[var(--color-heading)] outline-none"
                 />
+                <div className="mt-3 grid gap-3 sm:grid-cols-2">
+                  {question.options.slice(0, question.optionCount).map((option, optionIndex) => (
+                    <input
+                      key={`${question.id}-${optionIndex}`}
+                      value={option}
+                      onChange={(event) =>
+                        setQuestions((current) =>
+                          current.map((item, itemIndex) =>
+                            itemIndex === index
+                              ? {
+                                  ...item,
+                                  options: item.options.map((entry, entryIndex) =>
+                                    entryIndex === optionIndex ? event.target.value.slice(0, 60) : entry,
+                                  ),
+                                }
+                              : item,
+                          ),
+                        )
+                      }
+                      placeholder={`Option ${String.fromCharCode(65 + optionIndex)}`}
+                      className="surface-soft rounded-2xl px-4 py-3 text-sm text-[var(--color-heading)] outline-none"
+                    />
+                  ))}
+                </div>
               </div>
             ))}
+
             <div className="flex flex-wrap gap-3">
               <button
                 type="button"
-                onClick={() => setQuestions((current) => [...current, createQuestion(current.length)])}
+                onClick={() => setQuestions((current) => [...current, createQuestion(current.length, 4)])}
                 className="surface rounded-full px-5 py-3 text-sm font-semibold text-[var(--color-heading)]"
               >
                 Add Question
@@ -278,6 +373,72 @@ export function DashboardTestStudio({
 
         <div className="grid gap-4">
           <div className="surface-soft rounded-[1.75rem] p-5">
+            <p className="text-sm font-semibold text-[var(--color-heading)]">Pending manual grading</p>
+            <div className="mt-4 grid gap-3">
+              {pendingSubmissions.map((submission) => (
+                <button
+                  key={submission.id}
+                  type="button"
+                  onClick={() => setGradingSubmissionId(submission.id)}
+                  className="surface rounded-3xl p-4 text-left"
+                >
+                  <p className="text-sm font-semibold text-[var(--color-heading)]">{submission.studentName}</p>
+                  <p className="mt-2 text-sm leading-6 text-[var(--color-muted)]">
+                    Awaiting faculty review and result publication.
+                  </p>
+                </button>
+              ))}
+            </div>
+          </div>
+
+          <div className="surface-soft rounded-[1.75rem] p-5">
+            <p className="text-sm font-semibold text-[var(--color-heading)]">Grading window</p>
+            {gradingSubmission ? (
+              <div className="mt-4 grid gap-3">
+                <p className="text-sm font-semibold text-[var(--color-heading)]">
+                  {gradingSubmission.studentName}
+                </p>
+                {gradingTest ? (
+                  <div className="grid gap-3">
+                    {gradingTest.questions?.map((question, index) => (
+                      <div key={question.id} className="surface rounded-3xl p-4">
+                        <p className="text-sm font-semibold text-[var(--color-heading)]">{question.prompt}</p>
+                        <p className="mt-2 text-sm leading-6 text-[var(--color-muted)]">
+                          Selected answer:{" "}
+                          {typeof gradingSubmission.answers[index] === "number" &&
+                          gradingSubmission.answers[index] >= 0
+                            ? question.options[gradingSubmission.answers[index]]
+                            : "No answer submitted"}
+                        </p>
+                      </div>
+                    ))}
+                  </div>
+                ) : null}
+                <input
+                  value={gradeScore}
+                  onChange={(event) => setGradeScore(event.target.value.replace(/[^0-9]/g, "").slice(0, 3))}
+                  placeholder={`Score out of ${gradingSubmission.total}`}
+                  className="surface-soft rounded-2xl px-4 py-3 text-sm text-[var(--color-heading)] outline-none"
+                />
+                <textarea
+                  value={gradeFeedback}
+                  onChange={(event) => setGradeFeedback(event.target.value.slice(0, 200))}
+                  placeholder="Feedback for the student board"
+                  rows={4}
+                  className="surface-soft rounded-2xl px-4 py-3 text-sm text-[var(--color-heading)] outline-none"
+                />
+                <button type="button" onClick={handleGradeSubmission} className="action-button px-6 py-4">
+                  Grade And Publish Result
+                </button>
+              </div>
+            ) : (
+              <p className="mt-4 text-sm leading-6 text-[var(--color-muted)]">
+                Select a submitted response to grade it manually and publish the result back to the student.
+              </p>
+            )}
+          </div>
+
+          <div className="surface-soft rounded-[1.75rem] p-5">
             <p className="text-sm font-semibold text-[var(--color-heading)]">Latest tests</p>
             <div className="mt-4 grid gap-3">
               {tests.slice(0, 4).map((test) => (
@@ -286,19 +447,6 @@ export function DashboardTestStudio({
                     {test.title}
                   </p>
                   <p className="mt-2 text-sm leading-6 text-[var(--color-muted)]">{test.summary}</p>
-                </div>
-              ))}
-            </div>
-          </div>
-          <div className="surface-soft rounded-[1.75rem] p-5">
-            <p className="text-sm font-semibold text-[var(--color-heading)]">Returned responses</p>
-            <div className="mt-4 grid gap-3">
-              {submissions.slice(0, 4).map((submission) => (
-                <div key={submission.id} className="surface rounded-3xl p-4">
-                  <p className="text-sm font-semibold text-[var(--color-heading)]">{submission.studentName}</p>
-                  <p className="mt-2 text-sm leading-6 text-[var(--color-muted)]">
-                    Score {submission.score}/{submission.total}
-                  </p>
                 </div>
               ))}
             </div>

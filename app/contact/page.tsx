@@ -1,8 +1,10 @@
 import { LiveClock } from "@/components/live-clock";
-import { getPublicInstituteData } from "@/lib/mock-data";
+import { getPublicInstituteData } from "@/lib/data-store";
 
-export default function ContactPage() {
-  const data = getPublicInstituteData();
+export const dynamic = "force-dynamic";
+
+export default async function ContactPage() {
+  const data = await getPublicInstituteData();
 
   return (
     <main className="section-shell pb-16 pt-8">
@@ -10,9 +12,9 @@ export default function ContactPage() {
         <div className="grid gap-8 lg:grid-cols-[1.05fr_0.95fr]">
           <div className="text-center lg:text-left">
             <p className="section-label">Contact Us</p>
-            <h1 className="section-title">Reach SmartIQ Academy for counselling, batches, and admissions</h1>
+            <h1 className="section-title">Reach Smart Tutor for counselling, batches, and admissions</h1>
             <p className="mt-4 max-w-2xl text-sm leading-7 text-[var(--color-muted)]">
-              Reach SmartIQ through calls, WhatsApp, email, campus visits, and social channels.
+              Reach Smart Tutor through calls, WhatsApp, email, campus visits, and social channels.
               This structure is ready for richer CRM or admissions workflows later.
             </p>
 

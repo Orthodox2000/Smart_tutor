@@ -1,17 +1,25 @@
 import { NextResponse } from "next/server";
 
 import { getSessionUser } from "@/lib/auth";
-import { getDashboardBundle, getStudentDirectory, getTestSubmissionsForRole, getUsersForAdmin } from "@/lib/mock-data";
+import { getDashboardBundle, getStudentDirectory, getTestSubmissionsForRole, getUsersForAdmin } from "@/lib/data-store";
 
 export async function GET() {
   const session = await getSessionUser();
-  const data = getDashboardBundle(session?.role ?? "guest", session?.id);
+
+  if (!session) {
+    return NextResponse.json(
+      { error: "Login is required to access the dashboard." },
+      { status: 401 },
+    );
+  }
+
+  const data = await getDashboardBundle(session?.role ?? "guest", session?.id);
 
   return NextResponse.json({
     user: session,
     dashboard: data,
-    users: session?.role === "admin" ? getUsersForAdmin() : [],
-    students: session?.role && ["educator", "admin"].includes(session.role) ? getStudentDirectory() : [],
-    submissions: getTestSubmissionsForRole(session?.role ?? "guest", session?.id),
+    users: session?.role === "admin" ? await getUsersForAdmin() : [],
+    students: session?.role && ["educator", "admin"].includes(session.role) ? await getStudentDirectory() : [],
+    submissions: await getTestSubmissionsForRole(session?.role ?? "guest", session?.id),
   });
 }

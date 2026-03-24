@@ -1,6 +1,6 @@
-# SmartIQ Academy
+# Smart Tutor
 
-SmartIQ Academy is a local-first Next.js 16 web app for an educational institute in Vashi. The current implementation focuses on a polished landing page, mock role-based access, local API routes, and a MongoDB-ready backend utility while keeping Firebase auth intentionally deferred.
+Smart Tutor is a local-first Next.js 16 web app for an educational institute in Vashi. The current implementation focuses on a polished landing page, mock role-based access, local API routes, and a MongoDB-ready backend utility while keeping Firebase auth intentionally deferred.
 
 ## Tech Stack
 
@@ -12,10 +12,10 @@ SmartIQ Academy is a local-first Next.js 16 web app for an educational institute
 
 ## Demo Accounts
 
-- `guest@smartiq.demo` / `Guest@123`
-- `riya@smartiq.demo` / `Student@123`
-- `amit@smartiq.demo` / `Educator@123`
-- `admin@smartiq.demo` / `Admin@123`
+- `guest@smarttutor.demo` / `Guest@123`
+- `riya@smarttutor.demo` / `Student@123`
+- `amit@smarttutor.demo` / `Educator@123`
+- `admin@smarttutor.demo` / `Admin@123`
 
 ## Local API Routes
 

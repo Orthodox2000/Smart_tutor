@@ -44,6 +44,13 @@ type UserDocument = SessionUser & {
   updatedAt?: string;
 };
 
+type MessageDocument = MessageItem & {
+  audience?: Role[] | Role | null;
+  userIds?: string[] | string | null;
+  createdAt?: string | Date | null;
+  expiresAt?: string | Date | null;
+};
+
 const COLLECTIONS = {
   content: "content",
   users: "users",
@@ -200,6 +207,62 @@ function hydrateCourse(document: Partial<CourseItem> & { id: string }) {
     points: document.points?.length ? document.points : template.points,
     audience: document.audience?.length ? document.audience : template.audience,
   } satisfies CourseItem;
+}
+
+function normalizeStringArray(value: string[] | string | null | undefined) {
+  if (Array.isArray(value)) {
+    return value.filter((item): item is string => typeof item === "string" && item.trim().length > 0);
+  }
+
+  if (typeof value === "string" && value.trim().length > 0) {
+    return [value];
+  }
+
+  return [];
+}
+
+function toIsoString(value: string | Date | null | undefined) {
+  if (!value) {
+    return null;
+  }
+
+  if (value instanceof Date) {
+    return Number.isNaN(value.getTime()) ? null : value.toISOString();
+  }
+
+  const parsed = new Date(value);
+  return Number.isNaN(parsed.getTime()) ? null : parsed.toISOString();
+}
+
+function normalizeMessage(document: MessageDocument): MessageItem {
+  return {
+    ...document,
+    audience: normalizeStringArray(document.audience) as Role[],
+    userIds: normalizeStringArray(document.userIds),
+    createdAt: toIsoString(document.createdAt) ?? undefined,
+    expiresAt: toIsoString(document.expiresAt),
+  };
+}
+
+function isMessageActive(message: MessageItem, now = Date.now()) {
+  if (!message.expiresAt) {
+    return true;
+  }
+
+  const expiryTime = new Date(message.expiresAt).getTime();
+  return Number.isNaN(expiryTime) ? true : expiryTime > now;
+}
+
+function isMessageVisibleToUser(message: MessageItem, role: Role, userId?: string) {
+  if (!message.audience.includes(role)) {
+    return false;
+  }
+
+  if (!message.userIds?.length) {
+    return true;
+  }
+
+  return userId ? message.userIds.includes(userId) : false;
 }
 
 export async function getPublicInstituteData() {
@@ -413,24 +476,19 @@ export async function createTest(input: {
 }
 
 export async function getMessagesForRole(role: Role, userId?: string) {
-  const collection = await getCollection<MessageItem>(COLLECTIONS.messages);
+  const collection = await getCollection<MessageDocument>(COLLECTIONS.messages);
+  const now = Date.now();
+  const documents = stripMongoIds(await collection.find({}).toArray());
 
-  if (!userId) {
-    return stripMongoIds(
-      await collection
-        .find({ audience: role, $or: [{ userIds: { $exists: false } }, { userIds: [] }] })
-        .toArray(),
-    );
-  }
-
-  return stripMongoIds(
-    await collection
-      .find({
-        audience: role,
-        $or: [{ userIds: { $exists: false } }, { userIds: [] }, { userIds: userId }],
-      })
-      .toArray(),
-  );
+  return documents
+    .map((document) => normalizeMessage(document))
+    .filter((message) => isMessageVisibleToUser(message, role, userId))
+    .filter((message) => isMessageActive(message, now))
+    .sort((left, right) => {
+      const leftTime = left.createdAt ? new Date(left.createdAt).getTime() : 0;
+      const rightTime = right.createdAt ? new Date(right.createdAt).getTime() : 0;
+      return rightTime - leftTime;
+    });
 }
 
 export async function createMessage(input: {
@@ -440,6 +498,7 @@ export async function createMessage(input: {
   author: string;
   audience?: Role[];
   userIds?: string[];
+  expiresAt?: string | null;
 }) {
   const message: MessageItem & { createdAt: string } = {
     id: randomUUID(),
@@ -450,6 +509,7 @@ export async function createMessage(input: {
     audience: input.audience?.length ? input.audience : ["student", "educator", "admin"],
     userIds: input.userIds?.length ? input.userIds : undefined,
     createdAt: new Date().toISOString(),
+    expiresAt: input.expiresAt ?? null,
   };
 
   const collection = await getCollection<typeof message>(COLLECTIONS.messages);

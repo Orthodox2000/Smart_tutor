@@ -21,12 +21,31 @@ export function DashboardMessageCenter({
 }: DashboardMessageCenterProps) {
   const [title, setTitle] = useState("");
   const [body, setBody] = useState("");
-  const [channel, setChannel] = useState(role === "admin" ? "Admin Board" : "Faculty Board");
+  const [channel, setChannel] = useState(role === "admin" ? "Admin Board" : "Student Notice");
   const [targetMode, setTargetMode] = useState<"everyone" | "selected-students">("everyone");
   const [selectedStudentIds, setSelectedStudentIds] = useState<string[]>([]);
+  const [expiryPreset, setExpiryPreset] = useState<"24h" | "7d" | "30d" | "never">("7d");
   const [status, setStatus] = useState("");
 
   const canPost = role === "educator" || role === "admin";
+
+  function buildExpiryIso() {
+    if (expiryPreset === "never") {
+      return null;
+    }
+
+    const now = new Date();
+
+    if (expiryPreset === "24h") {
+      now.setHours(now.getHours() + 24);
+    } else if (expiryPreset === "7d") {
+      now.setDate(now.getDate() + 7);
+    } else {
+      now.setDate(now.getDate() + 30);
+    }
+
+    return now.toISOString();
+  }
 
   async function handlePublish() {
     const targetAudience =
@@ -43,6 +62,7 @@ export function DashboardMessageCenter({
         audience: targetAudience,
         targetMode,
         userIds: targetMode === "selected-students" ? selectedStudentIds : undefined,
+        expiresAt: buildExpiryIso(),
       }),
     });
 
@@ -57,6 +77,7 @@ export function DashboardMessageCenter({
     setTitle("");
     setBody("");
     setSelectedStudentIds([]);
+    setExpiryPreset("7d");
     setStatus("Message board updated.");
   }
 
@@ -91,12 +112,16 @@ export function DashboardMessageCenter({
                 className="surface-soft rounded-2xl px-4 py-3 text-sm text-[var(--color-heading)] outline-none"
               />
               <div className="grid gap-3 sm:grid-cols-2">
-                <input
+                <select
                   value={channel}
-                  onChange={(event) => setChannel(event.target.value.slice(0, 40))}
-                  placeholder="Channel"
+                  onChange={(event) => setChannel(event.target.value)}
                   className="surface-soft rounded-2xl px-4 py-3 text-sm text-[var(--color-heading)] outline-none"
-                />
+                >
+                  <option value="Student Notice">Student Notice</option>
+                  <option value="Academic Update">Academic Update</option>
+                  <option value="Results">Results</option>
+                  <option value="Admin Board">Admin Board</option>
+                </select>
                 <select
                   value={targetMode}
                   onChange={(event) =>
@@ -107,6 +132,29 @@ export function DashboardMessageCenter({
                   <option value="everyone">Send to everyone</option>
                   <option value="selected-students">Send to selected students</option>
                 </select>
+              </div>
+              <div className="grid gap-3 sm:grid-cols-2">
+                <div className="surface rounded-2xl px-4 py-3">
+                  <p className="text-sm font-semibold text-[var(--color-heading)]">Expiry</p>
+                  <select
+                    value={expiryPreset}
+                    onChange={(event) =>
+                      setExpiryPreset(event.target.value as "24h" | "7d" | "30d" | "never")
+                    }
+                    className="mt-2 w-full bg-transparent text-sm text-[var(--color-heading)] outline-none"
+                  >
+                    <option value="24h">24 hours</option>
+                    <option value="7d">7 days</option>
+                    <option value="30d">30 days</option>
+                    <option value="never">No expiry</option>
+                  </select>
+                </div>
+                <div className="surface rounded-2xl px-4 py-3 text-sm text-[var(--color-muted)]">
+                  <p className="font-semibold text-[var(--color-heading)]">Format</p>
+                  <p className="mt-2 leading-6">
+                    Title, channel, audience, expiry, and delivery scope are saved to MongoDB.
+                  </p>
+                </div>
               </div>
               {targetMode === "selected-students" ? (
                 <div className="rounded-3xl border border-[var(--color-border)] p-4">
@@ -163,6 +211,11 @@ export function DashboardMessageCenter({
                 {message.title}
               </p>
               <span className="pill shrink-0">{message.channel}</span>
+            </div>
+            <div className="mt-2 flex flex-wrap gap-2 text-xs font-semibold text-[var(--color-muted)]">
+              {message.author ? <span>By {message.author}</span> : null}
+              {message.createdAt ? <span>{new Date(message.createdAt).toLocaleString()}</span> : null}
+              {message.expiresAt ? <span>Expires {new Date(message.expiresAt).toLocaleString()}</span> : <span>No expiry</span>}
             </div>
             <p className="mt-3 break-words text-sm leading-6 text-[var(--color-muted)]">{message.body}</p>
           </div>

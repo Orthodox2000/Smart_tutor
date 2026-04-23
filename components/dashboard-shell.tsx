@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import { DashboardAccountDirectory } from "@/components/dashboard-account-directory";
 import { DashboardCourseManager } from "@/components/dashboard-course-manager";
@@ -90,6 +90,50 @@ export function DashboardShell({
   const showResults = activeSection === "results";
   const showCourses = activeSection === "courses";
   const showAccounts = activeSection === "accounts";
+
+  useEffect(() => {
+    let isMounted = true;
+
+    async function refreshMessages() {
+      try {
+        const response = await fetch("/api/messages", {
+          method: "GET",
+          credentials: "same-origin",
+          cache: "no-store",
+        });
+
+        const payload = (await response.json()) as { messages?: MessageItem[] };
+
+        if (!response.ok || !payload.messages || !isMounted) {
+          return;
+        }
+
+        setMessages(payload.messages);
+      } catch {
+        // Keep existing message state if refresh fails.
+      }
+    }
+
+    void refreshMessages();
+
+    const interval = window.setInterval(() => {
+      void refreshMessages();
+    }, 12000);
+
+    const handleFocus = () => {
+      void refreshMessages();
+    };
+
+    window.addEventListener("focus", handleFocus);
+    document.addEventListener("visibilitychange", handleFocus);
+
+    return () => {
+      isMounted = false;
+      window.clearInterval(interval);
+      window.removeEventListener("focus", handleFocus);
+      document.removeEventListener("visibilitychange", handleFocus);
+    };
+  }, [session?.id]);
 
   return (
     <main className="section-shell min-h-screen overflow-x-hidden pb-10 pt-8">
@@ -245,6 +289,23 @@ export function DashboardShell({
                         ))}
                       </div>
                     </div>
+                    {messages.length ? (
+                      <div className="surface-soft rounded-3xl p-5">
+                        <p className="text-lg font-semibold text-[var(--color-heading)]">Recent notices</p>
+                        <div className="mt-4 space-y-3">
+                          {messages.slice(0, 3).map((message) => (
+                            <div key={message.id}>
+                              <p className="text-sm font-semibold text-[var(--color-heading)]">
+                                {message.title}
+                              </p>
+                              <p className="mt-1 text-sm leading-6 text-[var(--color-muted)]">
+                                {message.body}
+                              </p>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    ) : null}
                   </div>
                 </article>
               </section>

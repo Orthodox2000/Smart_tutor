@@ -71,6 +71,8 @@ export type MessageItem = {
   audience: Role[];
   userIds?: string[];
   author?: string;
+  createdAt?: string;
+  expiresAt?: string | null;
 };
 
 export type SocialLink = {

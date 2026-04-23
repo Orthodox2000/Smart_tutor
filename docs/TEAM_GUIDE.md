@@ -37,6 +37,7 @@
 ## Working rules
 
 - Keep the design system centralized in `app/globals.css`.
+- Keep public and dashboard copy concise. Prefer short headings, short support text, and direct action labels.
 - Prefer editing runtime read/write logic in `lib/data-store.ts`; use `lib/mock-data.ts` only when changing the bootstrap template set.
 - When adding a role capability, update:
   1. Dashboard content

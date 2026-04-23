@@ -15,7 +15,7 @@ export function ThemeToggle() {
     >
       <span className="relative flex h-6 w-11 items-center rounded-full bg-[var(--color-background-strong)] p-1">
         <span
-          className={`h-4 w-4 rounded-full bg-[linear-gradient(135deg,var(--color-accent),var(--color-accent-strong))] transition-transform duration-500 ease-out ${
+          className={`h-4 w-4 rounded-full bg-[var(--color-accent)] transition-transform duration-500 ease-out ${
             isDark ? "translate-x-5" : "translate-x-0"
           }`}
         />

@@ -1,7 +1,8 @@
 "use client";
 
 import Link from "next/link";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { usePathname } from "next/navigation";
 
 import { LogoutButton } from "@/components/logout-button";
 import { MockLoginForm } from "@/components/mock-login-form";
@@ -24,9 +25,39 @@ const links = [
   { href: "/contact", label: "Contact" },
 ];
 
-export function SiteHeaderClient({ session, credentials }: SiteHeaderClientProps) {
+export function SiteHeaderClient({
+  session,
+  credentials,
+}: SiteHeaderClientProps) {
+  const pathname = usePathname();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isQuickLoginOpen, setIsQuickLoginOpen] = useState(false);
+  const [scrollProgress, setScrollProgress] = useState(0);
+
+  useEffect(() => {
+    if (pathname !== "/") {
+      setScrollProgress(0);
+      return;
+    }
+
+    const updateScrollProgress = () => {
+      const maxScroll =
+        document.documentElement.scrollHeight - window.innerHeight;
+      const nextProgress =
+        maxScroll > 0 ? Math.min(window.scrollY / maxScroll, 1) : 0;
+
+      setScrollProgress(nextProgress);
+    };
+
+    updateScrollProgress();
+    window.addEventListener("scroll", updateScrollProgress, { passive: true });
+    window.addEventListener("resize", updateScrollProgress);
+
+    return () => {
+      window.removeEventListener("scroll", updateScrollProgress);
+      window.removeEventListener("resize", updateScrollProgress);
+    };
+  }, [pathname]);
 
   function closeMenu() {
     setIsMobileMenuOpen(false);
@@ -34,9 +65,13 @@ export function SiteHeaderClient({ session, credentials }: SiteHeaderClientProps
 
   return (
     <header className="section-shell sticky top-3 z-30 pt-3 sm:top-4 sm:pt-5">
-      <div className="surface shell-bar rounded-[1.75rem] px-3 py-3 sm:px-5 lg:rounded-full lg:px-5">
-        <div className="flex min-h-[3.5rem] items-center justify-between gap-3 overflow-hidden">
-          <Link href="/" className="brand-mark max-w-[10rem] truncate sm:max-w-none" onClick={closeMenu}>
+      <div className="surface shell-bar rounded-[1.75rem] px-3 pt-3 sm:px-5 sm:pt-3 lg:rounded-full lg:px-5 lg:pt-3">
+        <div className="flex min-h-[3.5rem] items-center justify-between gap-3">
+          <Link
+            href="/"
+            className="brand-mark max-w-[10rem] truncate sm:max-w-none"
+            onClick={closeMenu}
+          >
             Smart Tutor
           </Link>
 
@@ -57,10 +92,13 @@ export function SiteHeaderClient({ session, credentials }: SiteHeaderClientProps
           <div className="hidden items-center gap-3 lg:flex">
             {session ? (
               <div className="surface-soft min-w-[110px] rounded-full px-4 py-2 text-center">
-                <p className="text-xs font-semibold uppercase tracking-[0.16em] text-[var(--color-muted)]">
+                <p className="text-xs font-semibold tracking-[0.04em] text-[var(--color-muted)]">
                   Signed In
                 </p>
-                <p className="truncate text-sm font-semibold text-[var(--color-heading)]" title={session.name}>
+                <p
+                  className="truncate text-sm font-semibold text-[var(--color-heading)]"
+                  title={session.name}
+                >
                   {shortenSessionName(session.name)}
                 </p>
               </div>
@@ -100,7 +138,9 @@ export function SiteHeaderClient({ session, credentials }: SiteHeaderClientProps
               aria-label={isMobileMenuOpen ? "Close menu" : "Open menu"}
               aria-expanded={isMobileMenuOpen}
             >
-              <span className="sr-only">{isMobileMenuOpen ? "Close menu" : "Open menu"}</span>
+              <span className="sr-only">
+                {isMobileMenuOpen ? "Close menu" : "Open menu"}
+              </span>
               <span className="flex flex-col items-center justify-center gap-1.5">
                 <span
                   className={`block h-0.5 w-5 rounded-full bg-current transition-transform duration-300 ${
@@ -124,7 +164,9 @@ export function SiteHeaderClient({ session, credentials }: SiteHeaderClientProps
 
         <div
           className={`mobile-menu-panel lg:hidden ${
-            isMobileMenuOpen ? "mobile-menu-panel-open" : "mobile-menu-panel-closed"
+            isMobileMenuOpen
+              ? "mobile-menu-panel-open"
+              : "mobile-menu-panel-closed"
           }`}
         >
           <div className="mt-4 grid gap-3 border-t border-[var(--color-border)] pt-4">
@@ -143,7 +185,9 @@ export function SiteHeaderClient({ session, credentials }: SiteHeaderClientProps
 
             <div className="surface-soft rounded-[1.4rem] p-4">
               <div className="flex items-center justify-between gap-3">
-                <p className="text-sm font-semibold text-[var(--color-heading)]">Theme</p>
+                <p className="text-sm font-semibold text-[var(--color-heading)]">
+                  Theme
+                </p>
                 <ThemeToggle />
               </div>
             </div>
@@ -151,15 +195,22 @@ export function SiteHeaderClient({ session, credentials }: SiteHeaderClientProps
             {session ? (
               <>
                 <div className="surface-soft rounded-[1.4rem] px-4 py-3 text-center">
-                  <p className="text-xs font-semibold uppercase tracking-[0.16em] text-[var(--color-muted)]">
+                  <p className="text-xs font-semibold tracking-[0.04em] text-[var(--color-muted)]">
                     Signed In
                   </p>
-                  <p className="mt-1 truncate text-sm font-semibold text-[var(--color-heading)]" title={session.name}>
+                  <p
+                    className="mt-1 truncate text-sm font-semibold text-[var(--color-heading)]"
+                    title={session.name}
+                  >
                     {shortenSessionName(session.name)}
                   </p>
                 </div>
                 <div className="grid gap-2">
-                  <Link href="/dashboard" onClick={closeMenu} className="action-button justify-center px-5 py-3">
+                  <Link
+                    href="/dashboard"
+                    onClick={closeMenu}
+                    className="action-button justify-center px-5 py-3"
+                  >
                     Dashboard
                   </Link>
                   <LogoutButton />
@@ -168,11 +219,24 @@ export function SiteHeaderClient({ session, credentials }: SiteHeaderClientProps
             ) : null}
           </div>
         </div>
+
+        {pathname === "/" ? (
+          <div className="home-progress home-progress-shell mt-3 overflow-hidden">
+            <div
+              className="home-progress-bar h-full"
+              style={{ width: `${Math.max(scrollProgress * 100, 6)}%` }}
+            />
+          </div>
+        ) : null}
       </div>
 
       {!session ? (
         <div
-          className={`mobile-login-overlay lg:hidden ${isQuickLoginOpen ? "mobile-login-overlay-open" : "mobile-login-overlay-closed"}`}
+          className={`mobile-login-overlay lg:hidden ${
+            isQuickLoginOpen
+              ? "mobile-login-overlay-open"
+              : "mobile-login-overlay-closed"
+          }`}
         >
           <div className="mobile-login-sheet surface rounded-[2rem] p-5">
             <div className="flex items-center justify-between gap-3">
@@ -185,10 +249,10 @@ export function SiteHeaderClient({ session, credentials }: SiteHeaderClientProps
               <button
                 type="button"
                 onClick={() => setIsQuickLoginOpen(false)}
-                className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-[var(--color-border)] bg-[var(--color-panel)] text-[0px] before:content-['x'] before:text-lg before:font-semibold before:leading-none before:text-[var(--color-heading)]"
+                className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-[var(--color-border)] bg-[var(--color-panel)] text-lg font-semibold leading-none text-[var(--color-heading)]"
                 aria-label="Close login"
               >
-                ×
+                x
               </button>
             </div>
             <div className="mt-5 max-h-[72dvh] overflow-y-auto pr-1">

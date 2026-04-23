@@ -115,48 +115,48 @@ const rolePermissions: Record<Role, PermissionItem[]> = {
     {
       title: "Public exploration",
       description:
-        "View the landing experience, browse featured programs, and understand the institute offering.",
+        "Browse the landing page and featured programs.",
     },
     {
       title: "Preview dashboard shell",
       description:
-        "See a limited product tour without personal data, assessments, or institute operations.",
+        "See the workspace without private data.",
     },
   ],
   student: [
     {
       title: "Personal dashboard",
       description:
-        "Access announcements, study plans, upcoming tests, and progress snapshots for assigned courses.",
+        "See announcements, tests, and study progress.",
     },
     {
       title: "Message boards and materials",
       description:
-        "Read personalized notices, course updates, and the learning resources linked to current batches.",
+        "Open notices, course updates, and materials.",
     },
   ],
   educator: [
     {
       title: "Teaching operations",
       description:
-        "Create tests, review grading queues, manage course streams, and communicate with student cohorts.",
+        "Create tests, grade work, and message batches.",
     },
     {
       title: "Delivery oversight",
       description:
-        "Track live batches, attendance trends, and mentoring follow-ups from a single workspace.",
+        "Track batches, attendance, and follow-ups.",
     },
   ],
   admin: [
     {
       title: "User and permission control",
       description:
-        "Create accounts, assign role access, and extend the platform safely as institute operations grow.",
+        "Create accounts and assign access.",
     },
     {
       title: "Institute management",
       description:
-        "Monitor faculty operations, branch readiness, admissions flow, and governance-level alerts.",
+        "Monitor operations, admissions, and alerts.",
     },
   ],
 };
@@ -167,7 +167,7 @@ const courses: CourseItem[] = [
     title: "Placement Accelerator Bootcamp",
     schedule: "Mon | Wed | Fri",
     summary:
-      "Mock interviews, aptitude practice, communication drills, and recruiter-facing project support.",
+      "Mock interviews, aptitude, communication, and project support.",
     audience: ["student", "educator", "admin"],
   },
   {
@@ -175,7 +175,7 @@ const courses: CourseItem[] = [
     title: "Government Exams Strategy Lab",
     schedule: "Tue | Thu | Sat",
     summary:
-      "Structured preparation for competitive exams with revision sprints, test analysis, and mentor review.",
+      "Competitive exam prep with revision, tests, and mentor review.",
     audience: ["student", "educator", "admin"],
   },
   {
@@ -183,7 +183,7 @@ const courses: CourseItem[] = [
     title: "College Excellence Support",
     schedule: "Weekday Mentorship",
     summary:
-      "Academic planning, assignment guidance, concept workshops, and semester score improvement support.",
+      "Academic planning, assignments, workshops, and score improvement.",
     audience: ["student", "educator", "admin"],
   },
   {
@@ -191,7 +191,7 @@ const courses: CourseItem[] = [
     title: "Admissions Showcase Track",
     schedule: "Public Access",
     summary:
-      "A preview of Smart Tutor pathways, faculty quality, campus support, and outcome-focused learning philosophy.",
+      "A preview of Smart Tutor programs and campus support.",
     audience: ["guest", "student", "educator", "admin"],
   },
 ];
@@ -228,7 +228,7 @@ const tests: TestItem[] = [
     title: "Quantitative Aptitude Mock 08",
     status: "Scheduled",
     summary:
-      "Time-bound aptitude assessment with sectional analytics and question-level review notes.",
+      "Timed aptitude assessment with review notes.",
     audience: ["student", "educator", "admin"],
     assignedUserIds: ["student-1", "student-3"],
     createdBy: "Amit Deshmukh",
@@ -239,7 +239,7 @@ const tests: TestItem[] = [
     title: "SSC Revision Sprint Evaluation",
     status: "Ready To Issue",
     summary:
-      "Educator-prepared revision paper covering reasoning, general awareness, and accuracy scoring.",
+      "Revision paper covering reasoning, awareness, and scoring.",
     audience: ["educator", "admin"],
     assignedUserIds: ["student-2"],
     createdBy: "Amit Deshmukh",
@@ -250,7 +250,7 @@ const tests: TestItem[] = [
     title: "Weekly Concept Check",
     status: "Result Published",
     summary:
-      "Student-facing concept validation with performance bands, answer review, and remediation prompts.",
+      "Concept check with review and follow-up prompts.",
     audience: ["student", "educator", "admin"],
     assignedUserIds: ["student-1"],
     createdBy: "Neha Joshi",
@@ -263,7 +263,7 @@ const messages: MessageItem[] = [
     id: "message-1",
     title: "Placement batch mentor update",
     body:
-      "Resume refinement workshop has moved to 5:30 PM. Bring your updated portfolio links for one-to-one review.",
+      "Resume workshop moves to 5:30 PM. Bring updated portfolio links.",
     channel: "Batch Board",
     audience: ["student", "educator", "admin"],
     userIds: ["student-1", "educator-1", "admin-1"],
@@ -272,7 +272,7 @@ const messages: MessageItem[] = [
     id: "message-2",
     title: "Faculty grading reminder",
     body:
-      "The pending evaluation queue should be closed by tonight so result publishing stays on schedule for weekend learners.",
+      "Please close the pending evaluation queue tonight.",
     channel: "Faculty Desk",
     audience: ["educator", "admin"],
   },
@@ -280,7 +280,7 @@ const messages: MessageItem[] = [
     id: "message-3",
     title: "Admissions guidance call",
     body:
-      "Guest visitors can request a counselling callback for placement, college, and government exam pathways.",
+      "Guest visitors can request a counselling callback.",
     channel: "Admissions",
     audience: ["guest", "admin"],
   },
@@ -288,7 +288,7 @@ const messages: MessageItem[] = [
     id: "message-4",
     title: "Access approval request",
     body:
-      "Two new educator accounts are awaiting final admin verification before onboarding into live batches.",
+      "Two educator accounts are waiting for admin approval.",
     channel: "Admin",
     audience: ["admin"],
   },
@@ -296,7 +296,7 @@ const messages: MessageItem[] = [
     id: "message-5",
     title: "Weekly concept check result published",
     body:
-      "Result for Weekly Concept Check is now available on the student board. Review the explanation notes before tomorrow's discussion.",
+      "Weekly Concept Check is now on the student board.",
     channel: "Results",
     audience: ["student", "educator", "admin"],
     userIds: ["student-1", "educator-2", "admin-1"],
@@ -326,88 +326,88 @@ const dashboardStats: Record<Role, DashboardMetric[]> = {
     {
       label: "Programs to explore",
       value: "12",
-      detail: "Public learning pathways, mentoring tracks, and exam categories visible before signup.",
+      detail: "Public programs and exam tracks before signup.",
     },
     {
       label: "Faculty showcases",
       value: "8",
-      detail: "Structured room for trainer intros, classroom clips, and outcome stories.",
+      detail: "Faculty and classroom highlights.",
     },
     {
       label: "Student stories",
       value: "24",
-      detail: "Landing storytelling can expand with topper journeys, placements, and event highlights.",
+      detail: "Stories, placements, and event highlights.",
     },
     {
       label: "Access level",
       value: "Preview",
-      detail: "Guests stay inside browse-only content until they are onboarded into a full account.",
+      detail: "Browse-only access before onboarding.",
     },
   ],
   student: [
     {
       label: "Upcoming tests",
       value: "03",
-      detail: "Student assessment panel shows scheduled mocks, published results, and review status.",
+      detail: "Scheduled mocks, results, and review status.",
     },
     {
       label: "Message threads",
       value: "11",
-      detail: "Personal board keeps institute notices, faculty replies, and batch updates in one place.",
+      detail: "Notices, replies, and batch updates.",
     },
     {
       label: "Attendance",
       value: "92%",
-      detail: "Role-specific cards can later sync to actual attendance data from MongoDB.",
+      detail: "Ready for live attendance data.",
     },
     {
       label: "Study materials",
       value: "18",
-      detail: "Supports PDFs, notes, recorded content, and structured revision packs.",
+      detail: "PDFs, notes, recordings, and revision packs.",
     },
   ],
   educator: [
     {
       label: "Active batches",
       value: "06",
-      detail: "Educators can supervise parallel cohorts without losing visibility into their workload.",
+      detail: "Track multiple cohorts in one place.",
     },
     {
       label: "Tests to grade",
       value: "14",
-      detail: "Operational widgets highlight urgent marking, pending issue windows, and evaluation output.",
+      detail: "Urgent grading and pending reviews.",
     },
     {
       label: "Course updates",
       value: "05",
-      detail: "Course management blocks keep schedule changes and content delivery aligned.",
+      detail: "Schedule and delivery updates.",
     },
     {
       label: "Mentoring load",
       value: "28",
-      detail: "Shows follow-ups for doubts, counselling, and improvement planning.",
+      detail: "Follow-ups for doubts and improvement plans.",
     },
   ],
   admin: [
     {
       label: "Managed accounts",
       value: "148",
-      detail: "Admin views emphasize user provisioning, branch readiness, and faculty deployment.",
+      detail: "Account provisioning and deployment.",
     },
     {
       label: "Pending approvals",
       value: "07",
-      detail: "New access and permission changes surface immediately so operations stay controlled.",
+      detail: "New access changes waiting for review.",
     },
     {
       label: "Institute alerts",
       value: "04",
-      detail: "Highlights operational blockers across academics, admissions, and staff coordination.",
+      detail: "Operational blockers across the institute.",
     },
     {
       label: "Access roles",
       value: "04",
-      detail: "Role model stays explicit and clean while the platform scales.",
+      detail: "Clear role model for the platform.",
     },
   ],
 };
@@ -456,37 +456,37 @@ const contactMethods: ContactMethod[] = [
     label: "Admissions Hotline",
     value: "+91 98765 43210",
     href: "tel:+919876543210",
-    description: "Primary counselling and admissions support for all new enquiries.",
+    description: "Counselling and admissions support.",
   },
   {
     label: "Student Support Desk",
     value: "+91 98190 11223",
     href: "tel:+919819011223",
-    description: "Student schedule, test support, classroom timing, and batch coordination.",
+    description: "Schedule, test, and batch support.",
   },
   {
     label: "Faculty Coordination",
     value: "+91 98204 55667",
     href: "tel:+919820455667",
-    description: "Educator operations, live batch planning, and internal coordination access.",
+    description: "Educator operations and batch planning.",
   },
   {
     label: "Admissions Mail",
     value: "admissions@smarttutor.local",
     href: "mailto:admissions@smarttutor.local",
-    description: "Course brochures, fee details, and program-specific discussions.",
+    description: "Brochures, fees, and program questions.",
   },
   {
     label: "Student Mail",
     value: "support@smarttutor.local",
     href: "mailto:support@smarttutor.local",
-    description: "Student access help, result queries, and learning-material requests.",
+    description: "Access help, results, and materials.",
   },
   {
     label: "Visit The Academy",
     value: "Sector 17, Vashi, Navi Mumbai",
     href: "https://maps.google.com/?q=Vashi+Navi+Mumbai",
-    description: "Visit the branch for counselling, demo sessions, and admissions guidance.",
+    description: "Visit for counselling and admissions guidance.",
   },
 ];
 
@@ -519,7 +519,7 @@ const detailedCourses: DetailedCourse[] = [
     tagline: "Career Readiness",
     title: "Placement Accelerator Program",
     description:
-      "A structured placement track for aptitude, interview preparation, communication, portfolio readiness, and recruiter-facing confidence building.",
+      "Placement prep for aptitude, interviews, communication, and portfolio readiness.",
     duration: "8 to 12 weeks",
     mode: "Hybrid classroom + practice sessions",
     audience: "College students and final-year aspirants",
@@ -534,7 +534,7 @@ const detailedCourses: DetailedCourse[] = [
     tagline: "Competitive Preparation",
     title: "Government Exams Coaching",
     description:
-      "Detailed exam-prep support with concepts, revision cycles, doubt resolution, weekly tests, and performance analysis for disciplined aspirants.",
+      "Exam prep with concepts, revision, weekly tests, and performance review.",
     duration: "Long-term and fast-track batches",
     mode: "Offline core batches with revision support",
     audience: "Government exam aspirants",
@@ -549,7 +549,7 @@ const detailedCourses: DetailedCourse[] = [
     tagline: "Academic Support",
     title: "College Performance Support",
     description:
-      "Academic guidance for concept clarity, subject coaching, assignments, and exam preparation with a student-confidence-first approach.",
+      "Academic support for concepts, assignments, and exam prep.",
     duration: "Semester-based support",
     mode: "Subject-wise mentoring and study support",
     audience: "College students across streams",
@@ -564,7 +564,7 @@ const detailedCourses: DetailedCourse[] = [
     tagline: "Foundation Building",
     title: "Class 11 and 12 Focus Batches",
     description:
-      "Guided board-exam preparation with subject revisions, test discipline, concept reinforcement, and consistent academic reporting.",
+      "Board exam prep with revision, tests, and concept reinforcement.",
     duration: "Academic-year and revision formats",
     mode: "Offline batches with milestone testing",
     audience: "Junior college and senior secondary students",
@@ -686,68 +686,68 @@ export function getPublicInstituteData() {
     whatsappHref:
       "https://wa.me/919876543210?text=Hello%20Smart%20Tutor",
     headlineLines: [
-      "Structured learning. Guided growth. Consistent outcomes.",
-      "College academics, government exams, and placements under one roof.",
-      "Student focus, educator control, and admin clarity in one platform.",
-      "Admissions trust built with clean presentation and clear workflows.",
+      "Result-first coaching for serious aspirants.",
+      "Competitive exams, placements, and academics under one roof.",
+      "Disciplined batches. Sharp mentoring. Visible progress.",
+      "A Vashi institute built for performance.",
     ],
     metrics: [
-      { label: "Outcome-first programs", value: "18+" },
-      { label: "Role-based workflows", value: "4" },
-      { label: "Mock-first local APIs", value: "8" },
-      { label: "Desktop-first polish", value: "100%" },
+      { label: "Focused program tracks", value: "18+" },
+      { label: "Role-based experience", value: "4" },
+      { label: "Core institute workflows", value: "8" },
+      { label: "Desktop-ready delivery", value: "100%" },
     ],
     operationsHighlights: [
       {
         title: "Student-facing learning center",
         description:
-          "Tests, messages, progress snapshots, and materials remain grouped into a clean academic experience.",
+          "Tests, messages, progress, and materials in one place.",
         tag: "Student",
       },
       {
         title: "Educator command layer",
         description:
-          "Faculty can issue assessments, manage batches, coordinate messaging, and track grading progress.",
+          "Issue tests, manage batches, and track grading.",
         tag: "Educator",
       },
       {
         title: "Admin governance tools",
         description:
-          "Role and permission management is separated clearly so institute control stays deliberate.",
+          "Keep roles and permissions clear.",
         tag: "Admin",
       },
     ],
     programs: [
       {
         category: "Placement",
-        title: "Career Launch Studio",
+        title: "Placement Accelerator",
         duration: "12 Weeks",
         description:
-          "Placement-prep journeys covering aptitude, GDPI, mock panels, resume strategy, and recruiter communication.",
+          "Placement training with aptitude, GDPI, resumes, and interview rounds.",
         focus: ["Mock Interviews", "Aptitude", "Resume Review", "Soft Skills"],
       },
       {
         category: "Government Exams",
-        title: "Competitive Mastery Track",
+        title: "Government Exams Mastery",
         duration: "Ongoing",
         description:
-          "Structured exam preparation with topic plans, revision loops, timed tests, and high-discipline mentoring.",
+          "Exam preparation with revision cycles, timed tests, and mentor-led review.",
         focus: ["Reasoning", "Quant", "General Awareness", "Revision Sprints"],
       },
       {
         category: "College",
-        title: "Academic Excellence Program",
+        title: "Academic Support Program",
         duration: "Semester Based",
         description:
-          "Support for concept clarity, assignment delivery, subject confidence, and academic consistency for college students.",
+          "Concept support, assignment guidance, and steady academic improvement.",
         focus: ["Mentoring", "Assignments", "Revision", "Confidence Building"],
       },
       {
         category: "Institute",
-        title: "Educator Enablement Flow",
+        title: "Faculty Delivery System",
         duration: "Continuous",
         description:
-          "A working backend structure for faculty coordination, course delivery, testing workflows, and batch management.",
+          "Structured support for batch delivery, assessments, and institute coordination.",
         focus: ["Course Ops", "Evaluations", "Announcements", "Faculty Planning"],
       },
     ],
@@ -756,7 +756,7 @@ export function getPublicInstituteData() {
         role: "guest" as const,
         title: "Public visitor",
         summary:
-          "Guests browse the institute story, discover programs, and understand Smart Tutor before formal onboarding.",
+          "Explore the institute, programs, and brand story before onboarding.",
         features: [
           "Landing page access",
           "Featured program browsing",
@@ -767,7 +767,7 @@ export function getPublicInstituteData() {
         role: "student" as const,
         title: "Learner workspace",
         summary:
-          "Students get dashboards, course material, tests, and personal communication panels built for clarity.",
+          "Students get tests, materials, messages, and a clear academic dashboard.",
         features: [
           "Dashboard and study status",
           "Messages and notices",
@@ -778,7 +778,7 @@ export function getPublicInstituteData() {
         role: "educator" as const,
         title: "Faculty operations",
         summary:
-          "Educators run daily teaching work from one place, including test issuing, grading, and course oversight.",
+          "Educators manage delivery, grading, schedules, and student communication.",
         features: [
           "Create and grade tests",
           "Manage courses and schedules",
@@ -789,7 +789,7 @@ export function getPublicInstituteData() {
         role: "admin" as const,
         title: "Institute control",
         summary:
-          "Admins handle access, role creation, operational visibility, and the top-level permission structure.",
+          "Admins manage users, permissions, and institute-wide control.",
         features: [
           "Create and manage accounts",
           "Adjust access levels",
@@ -801,41 +801,41 @@ export function getPublicInstituteData() {
       {
         title: "Video-ready storytelling",
         description:
-          "Feature faculty intros, topper testimonials, event recaps, and classroom moments in a premium layout.",
+          "Show faculty, toppers, events, and classroom moments with confidence.",
       },
       {
         title: "Document and notes support",
         description:
-          "The structure can expand to PDFs, syllabus kits, practice sheets, and downloadable student resources.",
+          "Support notes, practice sheets, and program resources at scale.",
       },
       {
         title: "Gallery and event timelines",
         description:
-          "Keep institute celebrations, workshops, and milestone updates in an organized visual archive.",
+          "Turn achievements, events, and institute milestones into visible proof.",
       },
       {
         title: "Future CMS flexibility",
         description:
-          "Content blocks stay modular so future backend data can replace static sections cleanly.",
+          "Keep content flexible for future admin-led updates.",
       },
     ],
     designPrinciples: [
       {
         title: "Professional visual hierarchy",
         description:
-          "Large section titles, restrained surfaces, and strong spacing create trust without feeling sterile.",
+          "Strong hierarchy and spacing make the institute feel credible at a glance.",
         metric: "01",
       },
       {
         title: "Contained overflow and mobile safety",
         description:
-          "Every section is width-controlled and overflow-safe so the site remains dependable across screen sizes.",
+          "Every section stays clean across desktop and mobile screens.",
         metric: "02",
       },
       {
         title: "Colorful, not noisy",
         description:
-          "Violet accents and soft grayscale surfaces keep the interface energetic while the base palette stays disciplined.",
+          "Violet accents keep the interface energetic without losing seriousness.",
         metric: "03",
       },
     ],
@@ -927,22 +927,22 @@ export function getDashboardBundle(role: Role, userId?: string) {
     guest: {
       title: "Guest Preview Workspace",
       description:
-        "This view shows how the product introduces Smart Tutor before a learner or staff member is fully onboarded.",
+        "A limited preview before full onboarding.",
     },
     student: {
       title: `Welcome back${user ? `, ${user.name.split(" ")[0]}` : ""}`,
       description:
-        "Your dashboard groups upcoming tests, study materials, and personal communication so academic progress feels organized.",
+        "Tests, materials, and messages in one place.",
     },
     educator: {
       title: `Educator Console${user ? ` | ${user.name}` : ""}`,
       description:
-        "Create assessments, manage active batches, coordinate notices, and keep student delivery on track from one view.",
+        "Manage tests, batches, and notices from one view.",
     },
     admin: {
       title: `Admin Command Center${user ? ` | ${user.name}` : ""}`,
       description:
-        "Manage access, guide operations, and maintain consistent permissions across the full Smart Tutor platform.",
+        "Manage access, operations, and permissions.",
     },
   };
 
@@ -957,10 +957,10 @@ export function getDashboardBundle(role: Role, userId?: string) {
         role === "student"
           ? "Today's learner priorities"
           : role === "educator"
-            ? "Teaching operations board"
+            ? "Teaching priorities"
             : role === "admin"
-              ? "Institute leadership priorities"
-              : "What guests can review",
+              ? "Admin priorities"
+              : "What guests can view",
       badge:
         role === "admin"
           ? "Operations"
@@ -975,18 +975,18 @@ export function getDashboardBundle(role: Role, userId?: string) {
             role === "student"
               ? "Personal study schedule"
               : role === "educator"
-                ? "Assessment issuance"
+                ? "Assessment flow"
                 : role === "admin"
-                  ? "Role and access review"
+                  ? "Access review"
                   : "Program discovery",
           description:
             role === "student"
-              ? "Daily learning priorities, revision queues, and mentor reminders appear in one calm workspace."
+              ? "See daily priorities, revision work, and mentor reminders."
               : role === "educator"
-                ? "Issue tests, review pending evaluations, and keep each batch aligned to the academic plan."
+                ? "Issue tests and review pending evaluations."
                 : role === "admin"
-                  ? "Approve new users, verify permissions, and maintain clean separation between student, educator, and admin capabilities."
-                  : "Guests experience the admissions narrative, flagship programs, and feature overview without entering private data areas.",
+                  ? "Approve users and verify permissions."
+                  : "Guests can review programs and the product overview.",
           meta:
             role === "student"
               ? "Student"
@@ -1001,18 +1001,18 @@ export function getDashboardBundle(role: Role, userId?: string) {
             role === "student"
               ? "Result and material access"
               : role === "educator"
-                ? "Course communication"
+                ? "Batch communication"
                 : role === "admin"
-                  ? "Institute-wide visibility"
-                  : "Demo access guidance",
+                  ? "Institute visibility"
+                  : "Demo access",
           description:
             role === "student"
-              ? "Published results, class notes, and practice files remain easy to find from the same dashboard."
+              ? "Find results, notes, and practice files quickly."
               : role === "educator"
-                ? "Batch notices and follow-up messages help keep student attention and accountability strong."
+                ? "Send notices and follow-ups to each batch."
                 : role === "admin"
-                  ? "The admin layer is prepared to surface branch health, faculty loads, and operational warnings."
-                  : "The login flow demonstrates all roles with safe mock accounts until real authentication is connected.",
+                  ? "Track branch health, faculty loads, and alerts."
+                  : "Try each role with demo accounts.",
           meta: role === "guest" ? "Mock Auth" : "Workflow",
         },
       ],
@@ -1228,7 +1228,7 @@ export function getTemplateSeedData() {
             roleLabel: "Guest Access",
             heroTitle: "Guest Preview Workspace",
             heroDescription:
-              "This view shows how the product introduces Smart Tutor before a learner or staff member is fully onboarded.",
+              "A limited preview before full onboarding.",
             stats: dashboardStats.guest,
             primaryPanel: getDashboardBundle("guest").primaryPanel,
             permissions: rolePermissions.guest,
@@ -1237,7 +1237,7 @@ export function getTemplateSeedData() {
             roleLabel: "Student Workspace",
             heroTitle: "Welcome back",
             heroDescription:
-              "Your dashboard groups upcoming tests, study materials, and personal communication so academic progress feels organized.",
+              "Tests, materials, and messages in one place.",
             stats: dashboardStats.student,
             primaryPanel: getDashboardBundle("student").primaryPanel,
             permissions: rolePermissions.student,
@@ -1246,7 +1246,7 @@ export function getTemplateSeedData() {
             roleLabel: "Educator Desk",
             heroTitle: "Educator Console",
             heroDescription:
-              "Create assessments, manage active batches, coordinate notices, and keep student delivery on track from one view.",
+              "Manage tests, batches, and notices from one view.",
             stats: dashboardStats.educator,
             primaryPanel: getDashboardBundle("educator").primaryPanel,
             permissions: rolePermissions.educator,
@@ -1255,7 +1255,7 @@ export function getTemplateSeedData() {
             roleLabel: "Admin Console",
             heroTitle: "Admin Command Center",
             heroDescription:
-              "Manage access, guide operations, and maintain consistent permissions across the full Smart Tutor platform.",
+              "Manage access, operations, and permissions.",
             stats: dashboardStats.admin,
             primaryPanel: getDashboardBundle("admin").primaryPanel,
             permissions: rolePermissions.admin,

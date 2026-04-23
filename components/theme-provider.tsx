@@ -16,6 +16,10 @@ type ThemeContextValue = {
 };
 
 const ThemeContext = createContext<ThemeContextValue | null>(null);
+const fallbackThemeContext: ThemeContextValue = {
+  theme: "light",
+  toggleTheme: () => undefined,
+};
 
 export function ThemeProvider({ children }: { children: ReactNode }) {
   const [theme, setTheme] = useState<Theme>("light");
@@ -58,7 +62,7 @@ export function useTheme() {
   const context = useContext(ThemeContext);
 
   if (!context) {
-    throw new Error("useTheme must be used within ThemeProvider.");
+    return fallbackThemeContext;
   }
 
   return context;

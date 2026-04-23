@@ -48,9 +48,24 @@ const COLLECTIONS = {
   quizzes: "quiz_questions",
 } as const;
 
+function toPlainData<T>(value: T): T {
+  return JSON.parse(JSON.stringify(value)) as T;
+}
+
 function stripMongoId<T>(document: T & { _id?: unknown }) {
-  const { _id, ...rest } = document as T & { _id?: unknown };
-  return rest as T;
+  const plain = toPlainData(document) as T & { _id?: unknown };
+
+  if (plain && typeof plain === "object" && "_id" in plain) {
+    delete plain._id;
+  }
+
+  return plain as T;
+}
+
+function stripMongoIds<T extends Array<{ _id?: unknown }>>(documents: T) {
+  return documents.map((document) => stripMongoId(document)) as {
+    [K in keyof T]: T[K] extends { _id?: unknown } ? Omit<T[K], "_id"> : T[K];
+  };
 }
 
 async function getCollection<T extends Document>(
@@ -125,7 +140,7 @@ export async function getPublicInstituteData() {
 
 export async function getMockQuizQuestions() {
   const collection = await getCollection<QuizQuestion>(COLLECTIONS.quizzes);
-  return collection.find({}).toArray();
+  return stripMongoIds(await collection.find({}).toArray());
 }
 
 export async function getDemoCredentials() {
@@ -168,7 +183,7 @@ export async function findUserById(id: string) {
 
 export async function getCoursesForRole(role: Role) {
   const collection = await getCollection<CourseItem>(COLLECTIONS.courses);
-  return collection.find({ audience: role }).toArray();
+  return stripMongoIds(await collection.find({ audience: role }).toArray());
 }
 
 export async function createCourse(input: {
@@ -196,10 +211,12 @@ export async function getTestsForRole(role: Role, userId?: string) {
   const collection = await getCollection<TestItem>(COLLECTIONS.tests);
 
   if (role === "student") {
-    return collection.find({ audience: role, assignedUserIds: userId }).toArray();
+    return stripMongoIds(
+      await collection.find({ audience: role, assignedUserIds: userId }).toArray(),
+    );
   }
 
-  return collection.find({ audience: role }).toArray();
+  return stripMongoIds(await collection.find({ audience: role }).toArray());
 }
 
 export async function createTest(input: {
@@ -231,15 +248,21 @@ export async function getMessagesForRole(role: Role, userId?: string) {
   const collection = await getCollection<MessageItem>(COLLECTIONS.messages);
 
   if (!userId) {
-    return collection.find({ audience: role, $or: [{ userIds: { $exists: false } }, { userIds: [] }] }).toArray();
+    return stripMongoIds(
+      await collection
+        .find({ audience: role, $or: [{ userIds: { $exists: false } }, { userIds: [] }] })
+        .toArray(),
+    );
   }
 
-  return collection
-    .find({
-      audience: role,
-      $or: [{ userIds: { $exists: false } }, { userIds: [] }, { userIds: userId }],
-    })
-    .toArray();
+  return stripMongoIds(
+    await collection
+      .find({
+        audience: role,
+        $or: [{ userIds: { $exists: false } }, { userIds: [] }, { userIds: userId }],
+      })
+      .toArray(),
+  );
 }
 
 export async function createMessage(input: {
@@ -344,11 +367,13 @@ export async function getTestSubmissionsForRole(role: Role, userId?: string) {
   const collection = await getCollection<TestSubmission>(COLLECTIONS.submissions);
 
   if (role === "student") {
-    return collection.find({ studentId: userId }).sort({ submittedAt: -1 }).toArray();
+    return stripMongoIds(
+      await collection.find({ studentId: userId }).sort({ submittedAt: -1 }).toArray(),
+    );
   }
 
   if (role === "educator" || role === "admin") {
-    return collection.find({}).sort({ submittedAt: -1 }).toArray();
+    return stripMongoIds(await collection.find({}).sort({ submittedAt: -1 }).toArray());
   }
 
   return [];

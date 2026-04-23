@@ -1,34 +1,27 @@
 import Link from "next/link";
 
-import { LiveClock } from "@/components/live-clock";
+import { RevealOnScroll } from "@/components/reveal-on-scroll";
 import { getPublicInstituteData } from "@/lib/data-store";
 
 export async function SiteFooter() {
   const data = await getPublicInstituteData();
+  const mapQuery = encodeURIComponent(data.profile.address);
+  const mapSrc =
+    "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3771.017136012903!2d72.99560617520503!3d19.062984182138877!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3be7c1c3896c493f%3A0xd9b13c31e18e745e!2sSmartIQ%20Academy!5e0!3m2!1sen!2sin!4v1776943936994!5m2!1sen!2sin";
 
   return (
     <footer className="section-shell pb-8 pt-6">
-      <div className="surface graph-paper rounded-[2rem] p-6 sm:p-8">
-        <div className="grid gap-6 lg:grid-cols-[1fr_0.85fr_0.9fr]">
+      <RevealOnScroll className="surface graph-paper rounded-[2rem] p-6 sm:p-8">
+        <div className="grid gap-6 lg:grid-cols-[0.95fr_0.9fr_1.1fr]">
           <div>
             <Link href="/" className="text-2xl font-semibold tracking-[-0.05em] text-[var(--color-heading)]">
               Smart Tutor
             </Link>
             <p className="mt-4 max-w-md text-sm leading-7 text-[var(--color-muted)]">
-              Smart Tutor is designed as a polished learning platform for
-              admissions, student progress, educator workflows, and admin
-              control from one consistent interface.
+              Admissions, learning, and institute operations in one workspace.
             </p>
-            <div className="mt-5 grid gap-3 sm:grid-cols-2">
-              <LiveClock label="Vashi Campus Time" />
-              <LiveClock label="Support Desk Clock" />
-            </div>
-          </div>
-
-          <div>
-            <p className="section-label">Contact</p>
-            <div className="mt-4 space-y-3 text-sm text-[var(--color-muted)]">
-              <p>{data.profile.address}</p>
+            <div className="mt-5 space-y-3 text-sm text-[var(--color-muted)]">
+              <p className="font-semibold text-[var(--color-heading)]">{data.profile.address}</p>
               <p>{data.profile.phone}</p>
               <p>{data.profile.email}</p>
               <p>{data.profile.hours}</p>
@@ -36,9 +29,9 @@ export async function SiteFooter() {
           </div>
 
           <div>
-            <p className="section-label">Social And Access</p>
+            <p className="section-label">Social media</p>
             <div className="mt-4 grid gap-3 sm:grid-cols-2">
-              {data.socialLinks.map((item) => (
+              {data.socialLinks.slice(0, 4).map((item) => (
                 <a
                   key={item.label}
                   href={item.href}
@@ -50,13 +43,37 @@ export async function SiteFooter() {
                     ["--social-glow" as string]: item.glow,
                   }}
                 >
-                  {item.label}
+                  <span className="shine-child">{item.label}</span>
                 </a>
               ))}
             </div>
           </div>
+
+          <div>
+            <p className="section-label">Campus map</p>
+            <div className="media-frame map-frame mt-4 overflow-hidden rounded-[1.6rem]">
+              <div className="map-frame-inner">
+                <iframe
+                  title="Smart Tutor footer campus map"
+                  src={mapSrc}
+                  allowFullScreen
+                  loading="lazy"
+                  referrerPolicy="no-referrer-when-downgrade"
+                  className="absolute inset-0 h-full w-full border-0"
+                />
+              </div>
+            </div>
+            <a
+              href={`https://maps.google.com/?q=${mapQuery}`}
+              target="_blank"
+              rel="noreferrer"
+              className="mt-4 inline-flex text-sm font-semibold text-[var(--color-accent)]"
+            >
+              Open campus on Google Maps
+            </a>
+          </div>
         </div>
-      </div>
+      </RevealOnScroll>
     </footer>
   );
 }

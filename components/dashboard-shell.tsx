@@ -159,10 +159,10 @@ export function DashboardShell({
                 <LiveClock label="Campus Time" />
                 <div className="surface-soft rounded-3xl p-4">
                   <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-[var(--color-muted)]">
-                    API Structure
+                    API Scope
                   </p>
                   <p className="mt-2 text-sm leading-7 text-[var(--color-heading)]">
-                    Local auth, dashboard, courses, users, tests, submissions, and messages routes remain defined.
+                    Auth, dashboard, courses, users, tests, and messages are wired.
                   </p>
                 </div>
               </div>
@@ -228,7 +228,7 @@ export function DashboardShell({
                       </p>
                     </div>
                     <div className="surface-soft rounded-3xl p-5">
-                      <p className="text-lg font-semibold text-[var(--color-heading)]">Permissions snapshot</p>
+                      <p className="text-lg font-semibold text-[var(--color-heading)]">Permissions</p>
                       <div className="mt-4 space-y-3">
                         {dashboard.permissions.map((group) => (
                           <div key={group.title}>
@@ -276,7 +276,7 @@ export function DashboardShell({
                 <div>
                   <p className="section-label">Courses</p>
                   <h2 className="mt-3 text-2xl font-semibold tracking-[-0.04em] text-[var(--color-heading)]">
-                    Active learning tracks
+                    Active tracks
                   </h2>
                 </div>
                 <span className="pill">{dashboard.courses.length} items</span>
@@ -303,7 +303,7 @@ export function DashboardShell({
                 <div>
                   <p className="section-label">Results</p>
                   <h2 className="mt-3 text-2xl font-semibold tracking-[-0.04em] text-[var(--color-heading)]">
-                    Submission and publishing flow
+                    Results
                   </h2>
                 </div>
                 <span className="pill">{submissions.length} entries</span>

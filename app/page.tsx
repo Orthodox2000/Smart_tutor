@@ -1,6 +1,10 @@
 import Link from "next/link";
+import Image from "next/image";
 
+import { CountUpValue } from "@/components/count-up-value";
+import { HomeGlobe } from "@/components/home-globe";
 import { LiveClock } from "@/components/live-clock";
+import { RevealOnScroll } from "@/components/reveal-on-scroll";
 import { getPublicInstituteData } from "@/lib/data-store";
 
 export const dynamic = "force-dynamic";
@@ -17,38 +21,33 @@ export default async function Home() {
 
   return (
     <main className="relative overflow-hidden pb-16 pt-8">
-      <div className="hero-orb left-[6%] top-24 h-64 w-64" />
-      <div className="hero-orb right-[8%] top-[24rem] h-72 w-72 opacity-60" />
-
-      <section className="section-shell grid gap-8 pt-10 lg:grid-cols-[1.08fr_0.92fr] lg:items-center">
-        <div className="space-y-7 text-center lg:text-left"> 
+      <section className="section-shell grid gap-8 pt-10 lg:grid-cols-[1.08fr_0.92fr] lg:items-start">
+        <RevealOnScroll className="space-y-7 text-center lg:text-left"> 
           <div className="surface-soft inline-flex items-center justify-center gap-2 rounded-full px-4 py-2 text-sm text-[var(--color-muted)] lg:justify-start">
             <span className="h-2.5 w-2.5 rounded-full bg-[var(--color-accent)]" />
-            Admissions | Preparation | Placement | Faculty Operations 
+            Admissions | Exams | Placement
           </div>
 
           <div className="surface-soft inline-flex items-center justify-center gap-2 rounded-full ml-2 px-4 py-2 text-sm text-[var(--color-muted)] lg:justify-start">
             <span className="h-2.5 w-2.5 rounded-full bg-[var(--color-accent)]" />
-            Trusted learning platform in Vashi
+            Vashi's results-driven coaching campus
           </div> 
 
           <div className="space-y-5">
             <p className="keyword-line">
-              Vashi | College Support | Government Exams | Placement Training
+              Competitive exams | Placements | Academic support
             </p>
-            <h1 className="mx-auto max-w-5xl text-5xl font-semibold leading-[1.02] tracking-[-0.06em] text-[var(--color-heading)] sm:text-6xl xl:mx-0 xl:text-7xl">
-              Smart Tutor helps students, educators, and academic teams work from one clean digital campus.
+            <h1 className="mx-auto max-w-5xl text-5xl font-semibold leading-[1.06] tracking-[-0.025em] text-[var(--color-heading)] sm:text-6xl xl:mx-0 xl:text-6xl">
+              Serious coaching for exams, careers, and academic wins.
             </h1>
             <p className="mx-auto max-w-2xl text-lg leading-8 text-[var(--color-muted)] xl:mx-0">
-              A professional learning platform for admissions storytelling,
-              student dashboards, educator workflows, tests, notices, and admin
-              access control with a cleaner community-first experience.
+              Smart Tutor brings disciplined preparation, sharp mentoring, live testing, and real academic momentum into one focused institute experience.
             </p>
           </div>
 
           <div className="flex flex-col items-center gap-4 sm:flex-row sm:justify-center lg:items-start lg:justify-start">
             <Link href="/login" className="action-button justify-center px-6 py-4 text-base">
-              Explore Demo Roles
+              Start Exploring
             </Link>
             <Link
               href="/courses"
@@ -59,68 +58,82 @@ export default async function Home() {
           </div>
 
           <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
-            {data.metrics.map((metric) => (
+            {data.metrics.map((metric, index) => (
               <article key={metric.label} className="surface-soft rounded-3xl p-5 text-center lg:text-left">
-                <p className="text-3xl font-semibold tracking-[-0.04em] text-[var(--color-heading)]">
-                  {metric.value}
-                </p>
+                <CountUpValue
+                  value={metric.value}
+                  className="text-3xl font-semibold tracking-[-0.04em] text-[var(--color-heading)]"
+                />
                 <p className="mt-2 text-sm text-[var(--color-muted)]">{metric.label}</p>
               </article>
             ))}
           </div>
-        </div>
+        </RevealOnScroll>
 
-        <div className="grid gap-4">
+        <RevealOnScroll className="grid gap-4" delayMs={90}>
           <div className="surface graph-paper rounded-[2rem] p-6">
             <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
               <div>
-                <p className="section-label">Media Ready Hero</p>
+                <p className="section-label">Campus Highlights</p>
                 <h2 className="mt-3 text-2xl font-semibold tracking-[-0.04em] text-[var(--color-heading)]">
-                  Photo and video slots for institute stories
+                  Brand strength and visible results
                 </h2>
               </div>
               <LiveClock label="Campus Time" className="sm:min-w-[220px]" />
             </div>
 
-            <div className="mt-6 grid gap-4 md:grid-cols-2">
-              <div className="media-slot rounded-[1.75rem] p-6">
-                <p className="keyword-line">Photo Slot</p>
-                <div className="mt-4 flex h-44 items-center justify-center rounded-[1.5rem] border border-dashed border-[var(--color-border)] text-sm text-[var(--color-muted)]">
-                  Future campus or classroom image
+            <div className="mt-6 grid gap-4 px-2 sm:px-0 md:grid-cols-2">
+              <div className="media-slot rounded-[1.75rem] p-5 sm:p-6">
+                <p className="keyword-line">Institute identity</p>
+                <div className="media-frame relative mt-4 aspect-square overflow-hidden rounded-[1.5rem] sm:h-52 sm:aspect-auto md:h-44">
+                  <Image
+                    src="/image1.png"
+                    alt="SmartIQ Academy logo and institute identity"
+                    fill
+                    className="object-cover object-center"
+                    sizes="(max-width: 768px) 100vw, 50vw"
+                  />
                 </div>
               </div>
-              <div className="media-slot rounded-[1.75rem] p-6">
-                <p className="keyword-line">Video Slot</p>
-                <div className="mt-4 flex h-44 items-center justify-center rounded-[1.5rem] border border-dashed border-[var(--color-border)] text-sm text-[var(--color-muted)]">
-                  Future testimonial or promo video
+
+              <div className="media-slot rounded-[1.75rem] p-5 sm:p-6">
+                <p className="keyword-line">Result showcase</p>
+                <div className="media-frame relative mt-4 aspect-[4/5] overflow-hidden rounded-[1.5rem] sm:h-52 sm:aspect-auto md:h-44">
+                  <Image
+                    src="/image.png"
+                    alt="SmartIQ Academy toppers and result showcase"
+                    fill
+                    className="object-cover object-center"
+                    sizes="(max-width: 768px) 100vw, 50vw"
+                  />
                 </div>
               </div>
             </div>
           </div>
 
           <div className="surface rounded-[2rem] p-6">
-            <p className="section-label">Headline Lines</p>
+            <p className="section-label">Why Smart Tutor</p>
             <div className="mt-5 grid gap-3">
               {data.headlineLines.map((line) => (
                 <div key={line} className="surface-soft rounded-2xl px-4 py-3">
-                  <p className="text-sm font-semibold uppercase tracking-[0.18em] text-[var(--color-accent-strong)]">
+                  <p className="text-sm font-semibold tracking-[0.04em] text-[var(--color-accent-strong)]">
                     {line}
                   </p>
                 </div>
               ))}
             </div>
           </div>
-        </div>
+        </RevealOnScroll>
       </section>
 
-      <section className="section-shell py-14">
+      <HomeGlobe />
+
+      <RevealOnScroll className="section-shell py-14">
         <div className="mb-9 text-center lg:text-left">
-          <p className="section-label">Program Portfolio</p>
-          <h2 className="section-title">Designed for outcomes across every learner journey</h2>
+          <p className="section-label">Programs</p>
+          <h2 className="section-title">Programs built to produce results</h2>
           <p className="mx-auto mt-4 max-w-3xl text-sm leading-7 text-[var(--color-muted)] lg:mx-0">
-            Smart Tutor brings together academic support, competitive exam
-            training, placement preparation, and operations planning in a single,
-            detailed public experience.
+            Choose the track that matches your target and move with a clear plan.
           </p>
         </div>
 
@@ -156,12 +169,12 @@ export default async function Home() {
             </article>
           ))}
         </div>
-      </section>
+      </RevealOnScroll>
 
-      <section className="section-shell py-14">
+      <RevealOnScroll className="section-shell py-14" delayMs={40}>
         <div className="mb-9 text-center lg:text-left">
-          <p className="section-label">Authorization Model</p>
-          <h2 className="section-title">Four clear roles and a post-login experience for each</h2>
+          <p className="section-label">Roles</p>
+          <h2 className="section-title">One system. Every role aligned.</h2>
         </div>
 
         <div className="grid gap-5 lg:grid-cols-4">
@@ -186,14 +199,14 @@ export default async function Home() {
             </article>
           ))}
         </div>
-      </section>
+      </RevealOnScroll>
 
-      <section className="section-shell py-14">
+      <RevealOnScroll className="section-shell py-14" delayMs={80}>
         <div className="grid gap-6 lg:grid-cols-[0.95fr_1.05fr]">
           <article className="surface rounded-[2rem] p-7 text-center lg:text-left">
             <p className="section-label">Campus Experience</p>
             <h2 className="section-title max-w-2xl">
-              Professional content structure for admissions, trust, and academic credibility
+              Built to earn trust from the first scroll
             </h2>
             <div className="mt-8 grid gap-4 sm:grid-cols-2">
               {data.mediaFeatures.map((item) => (
@@ -210,9 +223,9 @@ export default async function Home() {
           </article>
 
           <article className="surface rounded-[2rem] p-7 text-center lg:text-left">
-            <p className="section-label">Clean Desktop Spacing</p>
+            <p className="section-label">Experience</p>
             <h2 className="section-title">
-              White shells, soft gray spacing, and violet accents inspired by the new dashboard design
+              Sharp presentation. Clear structure. Serious intent.
             </h2>
             <div className="mt-8 grid gap-4">
               {data.designPrinciples.map((principle) => (
@@ -228,7 +241,7 @@ export default async function Home() {
             </div>
           </article>
         </div>
-      </section>
+      </RevealOnScroll>
     </main>
   );
 }

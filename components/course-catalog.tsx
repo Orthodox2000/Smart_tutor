@@ -37,7 +37,7 @@ export function CourseCatalog({ courses }: CourseCatalogProps) {
             className="surface rounded-[1.8rem] p-6 text-left shine-hover"
           >
             <p className="keyword-line">{course.tagline}</p>
-            <h2 className="mt-3 text-2xl font-semibold tracking-[-0.04em] text-[var(--color-heading)]">
+            <h2 className="shine-child mt-3 text-2xl font-semibold tracking-[-0.04em] text-[var(--color-heading)]">
               {course.title}
             </h2>
             <p className="mt-3 text-sm leading-7 text-[var(--color-muted)]">

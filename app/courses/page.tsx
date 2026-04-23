@@ -14,11 +14,10 @@ export default async function CoursesPage() {
         <div className="max-w-4xl text-center lg:text-left">
           <p className="section-label">Courses Offered</p>
           <h1 className="section-title">
-            Smart Tutor pathways arranged as a clean course grid for faster admissions browsing
+            Smart Tutor courses at a glance
           </h1>
           <p className="mt-4 text-sm leading-7 text-[var(--color-muted)]">
-            Compare placement, government exam, academic support, and higher-secondary programs at a glance.
-            Open any course card to view the full details without making the page feel heavy.
+            Compare programs quickly. Open any card for details.
           </p>
         </div>
       </section>
@@ -27,7 +26,7 @@ export default async function CoursesPage() {
 
       <section className="mt-8 text-center lg:text-left">
         <Link href="/contact" className="action-button px-6 py-4">
-          Enquire For Admissions
+          Ask About Admissions
         </Link>
       </section>
     </main>

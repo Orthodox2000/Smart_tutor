@@ -21,11 +21,13 @@ export default function RootLayout({
     <html lang="en" suppressHydrationWarning data-scroll-behavior="smooth">
       <body suppressHydrationWarning>
         <ThemeProvider>
-          <div className="min-h-screen">
-            <SiteHeader />
-            {children}
-            <SiteFooter />
-            <FloatingWhatsApp />
+          <div className="relative min-h-screen isolate">
+            <div className="relative z-10">
+              <SiteHeader />
+              {children}
+              <SiteFooter />
+              <FloatingWhatsApp />
+            </div>
           </div>
         </ThemeProvider>
       </body>

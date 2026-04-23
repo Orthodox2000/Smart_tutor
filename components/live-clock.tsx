@@ -46,13 +46,13 @@ export function LiveClock({
 
   return (
     <div className={`surface-soft rounded-3xl p-4 ${className}`}>
-      <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-[var(--color-muted)]">
+      <p className="text-[11px] font-semibold tracking-[0.04em] text-[var(--color-muted)]">
         {label}
       </p>
       <p className="mt-2 text-xl font-semibold tracking-[-0.02em] text-[var(--color-heading)]">
         {time}
       </p>
-      <p className="mt-2 text-xs tracking-[0.18em] text-[var(--color-muted)]">{date}</p>
+      <p className="mt-2 text-xs tracking-[0.04em] text-[var(--color-muted)]">{date}</p>
     </div>
   );
 }

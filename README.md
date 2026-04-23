@@ -31,10 +31,12 @@ Smart Tutor is a local-first Next.js 16 web app for an educational institute in 
 
 ## Environment
 
-Create a local environment file from `.env.example` and provide:
+Create a local environment file from `example.env` and provide:
 
 ```bash
 MONGODB_URI=your-mongodb-uri
+MONGODB_DB=your-database-name
+MONGODB_BOOTSTRAP_KEY=your-bootstrap-secret
 ```
 
 The app currently uses mock in-memory content for UI development, but `lib/mongodb.ts` is ready for route-level persistence work.

@@ -13,13 +13,13 @@ export async function GET() {
     );
   }
 
-  const data = await getDashboardBundle(session?.role ?? "guest", session?.id);
+  const data = await getDashboardBundle(session.role, session.id);
 
   return NextResponse.json({
     user: session,
     dashboard: data,
     users: session?.role === "admin" ? await getUsersForAdmin() : [],
     students: session?.role && ["educator", "admin"].includes(session.role) ? await getStudentDirectory() : [],
-    submissions: await getTestSubmissionsForRole(session?.role ?? "guest", session?.id),
+    submissions: await getTestSubmissionsForRole(session.role, session.id),
   });
 }

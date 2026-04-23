@@ -1,16 +1,22 @@
 import { NextResponse } from "next/server";
 
 import { getSessionUser } from "@/lib/auth";
-import { createCourse, getCoursesForRole } from "@/lib/data-store";
+import {
+  createCourse,
+  getCoursesForRole,
+  getStandardizedCourseOptions,
+  updateCourse,
+} from "@/lib/data-store";
 import { sanitizeTextInput, sanitizeTextareaInput } from "@/lib/validation";
 
 export async function GET() {
   const session = await getSessionUser();
-  const role = session?.role ?? "guest";
+  const role = session?.role ?? "student";
 
   return NextResponse.json({
     role,
     courses: await getCoursesForRole(role),
+    courseOptions: getStandardizedCourseOptions(),
   });
 }
 
@@ -25,25 +31,98 @@ export async function POST(request: Request) {
   }
 
   const body = (await request.json()) as {
-    title?: string;
+    standardKey?: string;
+    tagline?: string;
     schedule?: string;
     summary?: string;
+    description?: string;
+    duration?: string;
+    mode?: string;
+    audienceLabel?: string;
+    points?: string[];
   };
 
-  const title = sanitizeTextInput(body.title, 80);
+  const standardKey = sanitizeTextInput(body.standardKey, 80);
+  const tagline = sanitizeTextInput(body.tagline, 60);
   const schedule = sanitizeTextInput(body.schedule, 50);
   const summary = sanitizeTextareaInput(body.summary, 220);
+  const description = sanitizeTextareaInput(body.description, 520);
+  const duration = sanitizeTextInput(body.duration, 80);
+  const mode = sanitizeTextInput(body.mode, 80);
+  const audienceLabel = sanitizeTextInput(body.audienceLabel, 120);
+  const points = (body.points ?? [])
+    .map((item) => sanitizeTextInput(item, 120))
+    .filter(Boolean)
+    .slice(0, 6);
 
-  if (!title || !schedule || !summary) {
-    return NextResponse.json({ error: "Title, schedule, and summary are required." }, { status: 400 });
+  if (!standardKey) {
+    return NextResponse.json(
+      { error: "Course name must be selected from the standard list." },
+      { status: 400 },
+    );
   }
 
   const draft = await createCourse({
-    title,
+    standardKey,
+    tagline,
     schedule,
     summary,
+    description,
+    duration,
+    mode,
+    audienceLabel,
+    points,
     createdBy: session.name,
   });
 
   return NextResponse.json({ course: draft }, { status: 201 });
+}
+
+export async function PATCH(request: Request) {
+  const session = await getSessionUser();
+
+  if (!session || session.role !== "admin") {
+    return NextResponse.json({ error: "Only admins can edit courses." }, { status: 403 });
+  }
+
+  const body = (await request.json()) as {
+    id?: string;
+    standardKey?: string;
+    tagline?: string;
+    schedule?: string;
+    summary?: string;
+    description?: string;
+    duration?: string;
+    mode?: string;
+    audienceLabel?: string;
+    points?: string[];
+  };
+
+  const id = sanitizeTextInput(body.id, 80);
+  const standardKey = sanitizeTextInput(body.standardKey, 80);
+
+  if (!id || !standardKey) {
+    return NextResponse.json(
+      { error: "Course id and standard name are required." },
+      { status: 400 },
+    );
+  }
+
+  const course = await updateCourse({
+    id,
+    standardKey,
+    tagline: sanitizeTextInput(body.tagline, 60),
+    schedule: sanitizeTextInput(body.schedule, 50),
+    summary: sanitizeTextareaInput(body.summary, 220),
+    description: sanitizeTextareaInput(body.description, 520),
+    duration: sanitizeTextInput(body.duration, 80),
+    mode: sanitizeTextInput(body.mode, 80),
+    audienceLabel: sanitizeTextInput(body.audienceLabel, 120),
+    points: (body.points ?? [])
+      .map((item) => sanitizeTextInput(item, 120))
+      .filter(Boolean)
+      .slice(0, 6),
+  });
+
+  return NextResponse.json({ course });
 }

@@ -52,9 +52,21 @@ export async function seedMongoTemplateCollections(options?: { replaceExisting?:
 
   await Promise.all(
     template.users.map((document) =>
-      db.collection(COLLECTIONS.users).replaceOne({ id: document.id } as any, document, { upsert: true }),
+      db.collection(COLLECTIONS.users).replaceOne(
+        { id: document.id } as any,
+        { ...document, emailKey: document.email.toLowerCase() },
+        { upsert: true },
+      ),
     ),
   );
+
+  await Promise.all([
+    db.collection(COLLECTIONS.users).createIndex({ id: 1 }, { unique: true, name: "users_unique_id" }),
+    db.collection(COLLECTIONS.users).createIndex(
+      { emailKey: 1 },
+      { unique: true, name: "users_unique_emailKey" },
+    ),
+  ]);
 
   await Promise.all(
     template.courses.map((document) =>

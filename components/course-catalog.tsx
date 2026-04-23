@@ -2,14 +2,14 @@
 
 import { useEffect, useState } from "react";
 
-import type { DetailedCourse } from "@/lib/types";
+import type { CourseItem } from "@/lib/types";
 
 type CourseCatalogProps = {
-  courses: DetailedCourse[];
+  courses: CourseItem[];
 };
 
 export function CourseCatalog({ courses }: CourseCatalogProps) {
-  const [selectedCourse, setSelectedCourse] = useState<DetailedCourse | null>(null);
+  const [selectedCourse, setSelectedCourse] = useState<CourseItem | null>(null);
 
   useEffect(() => {
     if (!selectedCourse) {
@@ -125,7 +125,7 @@ export function CourseCatalog({ courses }: CourseCatalogProps) {
                   Audience
                 </p>
                 <p className="mt-2 text-sm font-semibold text-[var(--color-heading)]">
-                  {selectedCourse.audience}
+                  {selectedCourse.audienceLabel}
                 </p>
               </div>
             </div>

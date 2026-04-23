@@ -2,7 +2,12 @@ import { redirect } from "next/navigation";
 
 import { DashboardShell } from "@/components/dashboard-shell";
 import { getSessionUser } from "@/lib/auth";
-import { getDashboardBundle, getStudentDirectory, getUsersForAdmin } from "@/lib/data-store";
+import {
+  getDashboardBundle,
+  getStandardizedCourseOptions,
+  getStudentDirectory,
+  getUsersForAdmin,
+} from "@/lib/data-store";
 
 export const dynamic = "force-dynamic";
 
@@ -13,11 +18,12 @@ export default async function DashboardPage() {
     redirect("/login");
   }
 
-  const dashboard = await getDashboardBundle(session?.role ?? "guest", session?.id);
-  const role = session?.role ?? "guest";
+  const dashboard = await getDashboardBundle(session.role, session.id);
+  const role = session.role;
   const studentDirectory =
     role === "educator" || role === "admin" ? await getStudentDirectory() : [];
   const managedUsers = role === "admin" ? await getUsersForAdmin() : [];
+  const courseOptions = role === "admin" ? getStandardizedCourseOptions() : [];
 
   const supportContact =
     role === "student"
@@ -35,6 +41,7 @@ export default async function DashboardPage() {
       dashboard={dashboard}
       studentDirectory={studentDirectory}
       managedUsers={managedUsers}
+      courseOptions={courseOptions}
       supportContact={supportContact}
     />
   );

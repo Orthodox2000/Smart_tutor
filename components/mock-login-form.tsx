@@ -5,7 +5,6 @@ import { useMemo, useState } from "react";
 import type { DemoCredential } from "@/lib/types";
 
 const roleDescriptions = {
-  guest: "Preview the institute and public pages.",
   student: "Go straight to tests, notices, and materials.",
   educator: "Open batches, grading, and teaching tools.",
   admin: "Manage accounts, roles, and access.",
@@ -19,7 +18,6 @@ type MockLoginFormProps = {
 
 export function MockLoginForm({ credentials, compact = false, onSuccess }: MockLoginFormProps) {
   const fallbackCredential =
-    credentials[1] ??
     credentials[0] ?? {
       role: "student" as const,
       label: "Student Workspace",
@@ -79,13 +77,13 @@ export function MockLoginForm({ credentials, compact = false, onSuccess }: MockL
   return (
     <div className={compact ? "space-y-5" : "space-y-7"}>
       <div className={compact ? "space-y-3" : "space-y-4"}>
-        <p className="section-label">Smart Tutor Access</p>
+        <p className="section-label">Direct Demo Access</p>
         <h2
           className={`font-semibold tracking-[-0.05em] text-[var(--color-heading)] ${
             compact ? "text-2xl leading-tight sm:text-3xl" : "text-4xl"
           }`}
         >
-          Open your workspace
+          Continue with a demo role
         </h2>
         <p className={`max-w-2xl text-sm text-[var(--color-muted)] ${compact ? "leading-6" : "leading-7"}`}>
           Choose a role. Credentials fill automatically.
@@ -93,7 +91,7 @@ export function MockLoginForm({ credentials, compact = false, onSuccess }: MockL
       </div>
 
       <div className={`surface-soft rounded-[2rem] ${compact ? "p-3" : "p-4"}`}>
-        <div className="grid grid-cols-2 gap-2 sm:grid-cols-4">
+        <div className="grid grid-cols-1 gap-2 sm:grid-cols-3">
           {credentials.map((credential) => {
             const isSelected = credential.role === selectedRole;
 

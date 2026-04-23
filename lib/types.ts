@@ -1,4 +1,4 @@
-export type Role = "guest" | "student" | "educator" | "admin";
+export type Role = "student" | "educator" | "admin";
 
 export type SessionUser = {
   id: string;
@@ -39,9 +39,16 @@ export type PermissionItem = {
 
 export type CourseItem = {
   id: string;
+  standardKey: string;
+  tagline: string;
   title: string;
   schedule: string;
   summary: string;
+  description: string;
+  duration: string;
+  mode: string;
+  audienceLabel: string;
+  points: string[];
   audience: Role[];
 };
 
@@ -86,16 +93,7 @@ export type ContactAction = {
   style: "primary" | "secondary";
 };
 
-export type DetailedCourse = {
-  id: string;
-  tagline: string;
-  title: string;
-  description: string;
-  duration: string;
-  mode: string;
-  audience: string;
-  points: string[];
-};
+export type DetailedCourse = CourseItem;
 
 export type InstituteProfile = {
   name: string;

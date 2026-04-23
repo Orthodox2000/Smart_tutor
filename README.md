@@ -1,6 +1,6 @@
 # Smart Tutor
 
-Smart Tutor is a local-first Next.js 16 web app for an educational institute in Vashi. The current implementation focuses on a polished landing page, mock role-based access, local API routes, and a MongoDB-ready backend utility while keeping Firebase auth intentionally deferred.
+Smart Tutor is a Next.js 16 web app for a Vashi-based educational institute. The current app includes a polished public site, MongoDB-backed authentication and content, role-aware workspaces for students, educators, and admins, and admin tools for managing users and standardized courses.
 
 ## Tech Stack
 
@@ -10,24 +10,51 @@ Smart Tutor is a local-first Next.js 16 web app for an educational institute in 
 - MongoDB Node driver
 - Vercel-ready deployment structure
 
+## Current Roles
+
+- `student`
+- `educator`
+- `admin`
+
+The old `guest` role has been removed from the account model. Public visitors can still browse the landing page and public routes, but they are not stored as a user role anymore.
+
+## Login Modes
+
+- Real login: username/email + password against the MongoDB `users` collection
+- Direct demo login: role-based shortcut for student, educator, and admin
+
 ## Demo Accounts
 
-- `guest@smarttutor.demo` / `Guest@123`
 - `riya@smarttutor.demo` / `Student@123`
 - `amit@smarttutor.demo` / `Educator@123`
 - `admin@smarttutor.demo` / `Admin@123`
 
-## Local API Routes
+## Main Features
+
+- Production-style landing page with institute branding, results imagery, animated reveals, counter stats, and an interactive achiever section
+- Contact page and footer with embedded SmartIQ Academy Google Maps frames
+- Real login screen plus secondary direct demo access
+- Role-aware dashboard shell for students, educators, and admins
+- Admin account control with role sorting
+- Admin course control with standardized course-name selection and editable course details
+- Public course catalog backed by MongoDB, refreshed from the database and cached in browser local storage
+- Mongo bootstrap and health-check routes for initial setup and runtime verification
+- User integrity rules with unique person `id` and unique normalized email
+
+## API Routes
 
 - `GET /api/institute`
 - `POST /api/auth/login`
 - `POST /api/auth/logout`
 - `GET /api/auth/session`
 - `GET /api/dashboard`
-- `GET, POST /api/courses`
+- `GET, POST, PATCH /api/courses`
+- `GET /api/courses/details`
 - `GET, POST /api/messages`
 - `GET, POST /api/tests`
-- `GET, POST /api/users`
+- `GET, POST, PATCH /api/users`
+- `GET, POST /api/admin/bootstrap`
+- `GET /api/admin/mongo-status`
 
 ## Environment
 
@@ -39,7 +66,16 @@ MONGODB_DB=your-database-name
 MONGODB_BOOTSTRAP_KEY=your-bootstrap-secret
 ```
 
-The app currently uses mock in-memory content for UI development, but `lib/mongodb.ts` is ready for route-level persistence work.
+`MONGODB_URI` and `MONGODB_DB` are required for runtime data. `MONGODB_BOOTSTRAP_KEY` protects the bootstrap route used to initialize content and indexes.
+
+## Data Notes
+
+- MongoDB is the runtime source of truth for users, courses, messages, tests, quiz content, and public site content
+- `lib/mock-data.ts` is now a bootstrap template source, not the runtime store
+- User integrity is enforced through:
+  - unique `id`
+  - unique normalized `emailKey`
+- Standardized course names come from `lib/course-library.ts`
 
 ## Team Notes
 

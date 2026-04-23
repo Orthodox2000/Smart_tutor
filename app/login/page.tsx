@@ -3,6 +3,7 @@ import { redirect } from "next/navigation";
 
 import { LiveClock } from "@/components/live-clock";
 import { MockLoginForm } from "@/components/mock-login-form";
+import { RealLoginForm } from "@/components/real-login-form";
 import { getSessionUser } from "@/lib/auth";
 import { getDemoCredentials } from "@/lib/data-store";
 
@@ -16,13 +17,18 @@ export default async function LoginPage() {
   }
 
   return (
-    <main className="section-shell min-h-screen pb-24 pt-6 sm:pb-10 sm:pt-10">
-      <div className="grid gap-6 xl:grid-cols-[0.92fr_1.08fr]">
-        <section className="surface order-1 rounded-[2rem] p-6 sm:p-8 xl:order-2 xl:p-10">
-          <MockLoginForm credentials={demoCredentials} />
+    <main className="section-shell flex min-h-[calc(100dvh-6rem)] items-center pb-10 pt-6 sm:pt-10">
+      <div className="grid w-full gap-6 xl:grid-cols-[0.92fr_1.08fr] xl:items-stretch">
+        <section className="surface order-1 h-full rounded-[2rem] p-6 sm:p-8 xl:order-2 xl:p-10">
+          <div className="space-y-8">
+            <RealLoginForm />
+            <div className="border-t border-[var(--color-border)] pt-8">
+              <MockLoginForm credentials={demoCredentials} />
+            </div>
+          </div>
         </section>
 
-        <section className="dashboard-sidebar order-2 overflow-hidden rounded-[2rem] p-6 sm:p-8 xl:order-1 xl:p-10">
+        <section className="dashboard-sidebar order-2 h-full overflow-hidden rounded-[2rem] p-6 sm:p-8 xl:order-1 xl:p-10">
           <div>
             <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
               <Link href="/" className="text-3xl font-semibold tracking-[-0.06em] text-[var(--color-heading)]">
@@ -41,10 +47,10 @@ export default async function LoginPage() {
                 Smart Tutor Access
               </p>
               <h1 className="text-4xl font-semibold leading-[1.08] tracking-[-0.025em] text-[var(--color-heading)] sm:text-5xl">
-                One login. Clear paths.
+                Real sign-in first. Demo access below.
               </h1>
               <p className="text-sm leading-7 text-[var(--color-muted)]">
-                Pick a role. We fill the demo credentials for you.
+                Sign in with your account email and password, or use the direct demo role login when you want a fast preview.
               </p>
             </div>
 
@@ -55,10 +61,10 @@ export default async function LoginPage() {
                   Instant Access
                 </p>
                 <p className="mt-3 text-lg font-semibold text-[var(--color-heading)]">
-                  Demo access is ready
+                  Account login is now live
                 </p>
                 <p className="mt-2 text-sm leading-7 text-[var(--color-muted)]">
-                  The selected role opens its matching workspace directly.
+                  The main sign-in flow uses email and password, with direct demo access still available below.
                 </p>
               </div>
             </div>

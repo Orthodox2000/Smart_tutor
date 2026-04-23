@@ -21,6 +21,7 @@ export function DashboardAccountDirectory({
   initialUsers,
 }: DashboardAccountDirectoryProps) {
   const [users, setUsers] = useState(initialUsers);
+  const [sortBy, setSortBy] = useState<"name" | "role">("name");
   const [editingUserId, setEditingUserId] = useState<string | null>(null);
   const [drafts, setDrafts] = useState<Record<string, ManagedUser>>({});
   const [status, setStatus] = useState("");
@@ -42,6 +43,26 @@ export function DashboardAccountDirectory({
     }),
     [users],
   );
+
+  const sortedUsers = useMemo(() => {
+    const roleOrder: Record<Role, number> = {
+      admin: 0,
+      educator: 1,
+      student: 2,
+    };
+
+    return [...users].sort((left, right) => {
+      if (sortBy === "role") {
+        const roleDifference = roleOrder[left.role] - roleOrder[right.role];
+
+        if (roleDifference !== 0) {
+          return roleDifference;
+        }
+      }
+
+      return left.name.localeCompare(right.name);
+    });
+  }, [sortBy, users]);
 
   async function handleCreate() {
     const response = await fetch("/api/users", {
@@ -179,9 +200,7 @@ export function DashboardAccountDirectory({
                           ? "Admin@123"
                           : event.target.value === "educator"
                             ? "Educator@123"
-                            : event.target.value === "student"
-                              ? "Student@123"
-                              : "Guest@123",
+                            : "Student@123",
                     }))
                   }
                   className="surface-soft rounded-2xl px-4 py-3 text-sm text-[var(--color-heading)] outline-none"
@@ -260,8 +279,26 @@ export function DashboardAccountDirectory({
           </div>
         </div>
       ) : (
-        <div className="mt-6 grid gap-4 lg:grid-cols-2">
-          {users.map((user) => {
+        <div className="mt-6">
+          <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
+            <p className="text-sm font-semibold text-[var(--color-heading)]">
+              Directory sorted by {sortBy === "role" ? "role" : "name"}.
+            </p>
+            <label className="inline-flex items-center gap-3 rounded-full border border-[var(--color-border)] bg-[var(--color-panel)] px-4 py-2 text-sm font-semibold text-[var(--color-heading)]">
+              <span>Sort</span>
+              <select
+                value={sortBy}
+                onChange={(event) => setSortBy(event.target.value as "name" | "role")}
+                className="bg-transparent text-sm font-semibold text-[var(--color-heading)] outline-none"
+              >
+                <option value="name">Name</option>
+                <option value="role">Role</option>
+              </select>
+            </label>
+          </div>
+
+          <div className="grid gap-4 lg:grid-cols-2">
+          {sortedUsers.map((user) => {
             const currentDraft = drafts[user.id] ?? user;
             const isEditing = editingUserId === user.id;
 
@@ -300,7 +337,6 @@ export function DashboardAccountDirectory({
                         }
                         className="surface-soft rounded-2xl px-4 py-3 text-sm text-[var(--color-heading)] outline-none"
                       >
-                        <option value="guest">Guest</option>
                         <option value="student">Student</option>
                         <option value="educator">Educator</option>
                         <option value="admin">Admin</option>
@@ -374,6 +410,7 @@ export function DashboardAccountDirectory({
               </div>
             );
           })}
+          </div>
         </div>
       )}
     </section>

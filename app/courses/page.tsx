@@ -1,12 +1,12 @@
 import Link from "next/link";
 
-import { CourseCatalog } from "@/components/course-catalog";
-import { getPublicInstituteData } from "@/lib/data-store";
+import { CourseCatalogClient } from "@/components/course-catalog-client";
+import { getAllDetailedCourses } from "@/lib/data-store";
 
 export const dynamic = "force-dynamic";
 
 export default async function CoursesPage() {
-  const data = await getPublicInstituteData();
+  const courses = await getAllDetailedCourses();
 
   return (
     <main className="section-shell pb-16 pt-8">
@@ -22,7 +22,7 @@ export default async function CoursesPage() {
         </div>
       </section>
 
-      <CourseCatalog courses={data.detailedCourses} />
+      <CourseCatalogClient initialCourses={courses} />
 
       <section className="mt-8 text-center lg:text-left">
         <Link href="/contact" className="action-button px-6 py-4">

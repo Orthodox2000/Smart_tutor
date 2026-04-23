@@ -40,7 +40,7 @@ export async function POST(request: Request) {
     title?: string;
     body?: string;
     channel?: string;
-    audience?: ("guest" | "student" | "educator" | "admin")[];
+    audience?: ("student" | "educator" | "admin")[];
     userIds?: string[];
     targetMode?: "everyone" | "selected-students";
   };
@@ -50,7 +50,7 @@ export async function POST(request: Request) {
       title?: string;
       body?: string;
       channel?: string;
-      audience?: ("guest" | "student" | "educator" | "admin")[];
+      audience?: ("student" | "educator" | "admin")[];
       userIds?: string[];
       targetMode?: "everyone" | "selected-students";
     };

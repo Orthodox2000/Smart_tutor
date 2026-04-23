@@ -16,14 +16,9 @@ import type {
   TestSubmission,
   TestItem,
 } from "@/lib/types";
+import { courseLibrary } from "@/lib/course-library";
 
 export const demoCredentials = [
-  {
-    role: "guest" as const,
-    label: "Guest Preview",
-    email: "guest@smarttutor.demo",
-    password: "Guest@123",
-  },
   {
     role: "student" as const,
     label: "Student Workspace",
@@ -45,15 +40,6 @@ export const demoCredentials = [
 ];
 
 const demoUsers: DemoUserRecord[] = [
-  {
-    id: "guest-1",
-    name: "Campus Visitor",
-    email: "guest@smarttutor.demo",
-    password: "Guest@123",
-    role: "guest",
-    label: "Guest Preview",
-    program: "Admissions Preview",
-  },
   {
     id: "student-1",
     name: "Riya Sharma",
@@ -111,18 +97,6 @@ const demoUsers: DemoUserRecord[] = [
 ];
 
 const rolePermissions: Record<Role, PermissionItem[]> = {
-  guest: [
-    {
-      title: "Public exploration",
-      description:
-        "Browse the landing page and featured programs.",
-    },
-    {
-      title: "Preview dashboard shell",
-      description:
-        "See the workspace without private data.",
-    },
-  ],
   student: [
     {
       title: "Personal dashboard",
@@ -161,40 +135,10 @@ const rolePermissions: Record<Role, PermissionItem[]> = {
   ],
 };
 
-const courses: CourseItem[] = [
-  {
-    id: "course-1",
-    title: "Placement Accelerator Bootcamp",
-    schedule: "Mon | Wed | Fri",
-    summary:
-      "Mock interviews, aptitude, communication, and project support.",
-    audience: ["student", "educator", "admin"],
-  },
-  {
-    id: "course-2",
-    title: "Government Exams Strategy Lab",
-    schedule: "Tue | Thu | Sat",
-    summary:
-      "Competitive exam prep with revision, tests, and mentor review.",
-    audience: ["student", "educator", "admin"],
-  },
-  {
-    id: "course-3",
-    title: "College Excellence Support",
-    schedule: "Weekday Mentorship",
-    summary:
-      "Academic planning, assignments, workshops, and score improvement.",
-    audience: ["student", "educator", "admin"],
-  },
-  {
-    id: "course-4",
-    title: "Admissions Showcase Track",
-    schedule: "Public Access",
-    summary:
-      "A preview of Smart Tutor programs and campus support.",
-    audience: ["guest", "student", "educator", "admin"],
-  },
-];
+const courses: CourseItem[] = courseLibrary.map((course, index) => ({
+  id: `course-${index + 1}`,
+  ...course,
+}));
 
 const placementMcq: TestQuestion[] = [
   {
@@ -280,9 +224,9 @@ const messages: MessageItem[] = [
     id: "message-3",
     title: "Admissions guidance call",
     body:
-      "Guest visitors can request a counselling callback.",
+      "New visitors can request a counselling callback.",
     channel: "Admissions",
-    audience: ["guest", "admin"],
+    audience: ["student", "admin"],
   },
   {
     id: "message-4",
@@ -322,28 +266,6 @@ const testSubmissions: TestSubmission[] = [
 ];
 
 const dashboardStats: Record<Role, DashboardMetric[]> = {
-  guest: [
-    {
-      label: "Programs to explore",
-      value: "12",
-      detail: "Public programs and exam tracks before signup.",
-    },
-    {
-      label: "Faculty showcases",
-      value: "8",
-      detail: "Faculty and classroom highlights.",
-    },
-    {
-      label: "Student stories",
-      value: "24",
-      detail: "Stories, placements, and event highlights.",
-    },
-    {
-      label: "Access level",
-      value: "Preview",
-      detail: "Browse-only access before onboarding.",
-    },
-  ],
   student: [
     {
       label: "Upcoming tests",
@@ -513,68 +435,7 @@ const contactActions: ContactAction[] = [
   },
 ];
 
-const detailedCourses: DetailedCourse[] = [
-  {
-    id: "placement-accelerator",
-    tagline: "Career Readiness",
-    title: "Placement Accelerator Program",
-    description:
-      "Placement prep for aptitude, interviews, communication, and portfolio readiness.",
-    duration: "8 to 12 weeks",
-    mode: "Hybrid classroom + practice sessions",
-    audience: "College students and final-year aspirants",
-    points: [
-      "Aptitude practice and timed mock tests",
-      "Resume, LinkedIn, and interview mentoring",
-      "Communication, GD, and mock HR rounds",
-    ],
-  },
-  {
-    id: "government-exams",
-    tagline: "Competitive Preparation",
-    title: "Government Exams Coaching",
-    description:
-      "Exam prep with concepts, revision, weekly tests, and performance review.",
-    duration: "Long-term and fast-track batches",
-    mode: "Offline core batches with revision support",
-    audience: "Government exam aspirants",
-    points: [
-      "Reasoning, quant, awareness, and language practice",
-      "Revision sprints and mock evaluation support",
-      "Mentor review and performance-based planning",
-    ],
-  },
-  {
-    id: "college-support",
-    tagline: "Academic Support",
-    title: "College Performance Support",
-    description:
-      "Academic support for concepts, assignments, and exam prep.",
-    duration: "Semester-based support",
-    mode: "Subject-wise mentoring and study support",
-    audience: "College students across streams",
-    points: [
-      "Concept strengthening for core subjects",
-      "Assignment and semester exam support",
-      "Study structure, discipline, and doubt clearing",
-    ],
-  },
-  {
-    id: "class-11-12-focus",
-    tagline: "Foundation Building",
-    title: "Class 11 and 12 Focus Batches",
-    description:
-      "Board exam prep with revision, tests, and concept reinforcement.",
-    duration: "Academic-year and revision formats",
-    mode: "Offline batches with milestone testing",
-    audience: "Junior college and senior secondary students",
-    points: [
-      "Chapter-wise concept reinforcement and revision mapping",
-      "Timed paper practice and score-improvement reviews",
-      "Parent updates with study-discipline checkpoints",
-    ],
-  },
-];
+const detailedCourses: DetailedCourse[] = courses;
 
 const mockQuizQuestions: QuizQuestion[] = [
   {
@@ -753,17 +614,6 @@ export function getPublicInstituteData() {
     ],
     roles: [
       {
-        role: "guest" as const,
-        title: "Public visitor",
-        summary:
-          "Explore the institute, programs, and brand story before onboarding.",
-        features: [
-          "Landing page access",
-          "Featured program browsing",
-          "Admissions-focused content visibility",
-        ],
-      },
-      {
         role: "student" as const,
         title: "Learner workspace",
         summary:
@@ -924,11 +774,6 @@ export function getDashboardBundle(role: Role, userId?: string) {
   const user = userId ? findDemoUserById(userId) : null;
 
   const heroCopy: Record<Role, { title: string; description: string }> = {
-    guest: {
-      title: "Guest Preview Workspace",
-      description:
-        "A limited preview before full onboarding.",
-    },
     student: {
       title: `Welcome back${user ? `, ${user.name.split(" ")[0]}` : ""}`,
       description:
@@ -958,17 +803,13 @@ export function getDashboardBundle(role: Role, userId?: string) {
           ? "Today's learner priorities"
           : role === "educator"
             ? "Teaching priorities"
-            : role === "admin"
-              ? "Admin priorities"
-              : "What guests can view",
+            : "Admin priorities",
       badge:
         role === "admin"
           ? "Operations"
           : role === "educator"
             ? "Delivery"
-            : role === "student"
-              ? "Learning"
-              : "Preview",
+            : "Learning",
       items: [
         {
           title:
@@ -976,25 +817,19 @@ export function getDashboardBundle(role: Role, userId?: string) {
               ? "Personal study schedule"
               : role === "educator"
                 ? "Assessment flow"
-                : role === "admin"
-                  ? "Access review"
-                  : "Program discovery",
+                : "Access review",
           description:
             role === "student"
               ? "See daily priorities, revision work, and mentor reminders."
               : role === "educator"
                 ? "Issue tests and review pending evaluations."
-                : role === "admin"
-                  ? "Approve users and verify permissions."
-                  : "Guests can review programs and the product overview.",
+                : "Approve users and verify permissions.",
           meta:
             role === "student"
               ? "Student"
               : role === "educator"
                 ? "Educator"
-                : role === "admin"
-                  ? "Admin"
-                  : "Guest",
+                : "Admin",
         },
         {
           title:
@@ -1002,18 +837,14 @@ export function getDashboardBundle(role: Role, userId?: string) {
               ? "Result and material access"
               : role === "educator"
                 ? "Batch communication"
-                : role === "admin"
-                  ? "Institute visibility"
-                  : "Demo access",
+                : "Institute visibility",
           description:
             role === "student"
               ? "Find results, notes, and practice files quickly."
               : role === "educator"
                 ? "Send notices and follow-ups to each batch."
-                : role === "admin"
-                  ? "Track branch health, faculty loads, and alerts."
-                  : "Try each role with demo accounts.",
-          meta: role === "guest" ? "Mock Auth" : "Workflow",
+                : "Track branch health, faculty loads, and alerts.",
+          meta: "Workflow",
         },
       ],
     },
@@ -1162,9 +993,7 @@ export function createUserDraft(input: {
       ? "Admin@123"
       : role === "educator"
         ? "Educator@123"
-        : role === "student"
-          ? "Student@123"
-          : "Guest@123");
+        : "Student@123");
 
   return {
     id: `user-draft-${Date.now()}`,
@@ -1176,12 +1005,10 @@ export function createUserDraft(input: {
         ? "Admin Console"
         : role === "educator"
           ? "Educator Desk"
-          : role === "student"
-            ? "Student Workspace"
-            : "Guest Preview",
+        : "Student Workspace",
     program: input.program?.trim() || "New Registration",
     passwordHint: defaultPassword,
-    status: input.status ?? (role === "guest" ? "pending" : "active"),
+    status: input.status ?? "active",
     permissions: rolePermissions[role],
     createdAt: new Date().toISOString(),
   };
@@ -1201,7 +1028,7 @@ function toManagedUser(user: DemoUserRecord): ManagedUser {
   return {
     ...sanitizeUser(user),
     program: user.program,
-    status: user.role === "guest" ? "pending" : "active",
+    status: "active",
     passwordHint: user.password,
   };
 }
@@ -1211,7 +1038,7 @@ function normalizeRole(input?: string): Role {
     return input;
   }
 
-  return "guest";
+  return "student";
 }
 
 export function getTemplateSeedData() {
@@ -1224,15 +1051,6 @@ export function getTemplateSeedData() {
       {
         _id: "dashboard-config",
         templates: {
-          guest: {
-            roleLabel: "Guest Access",
-            heroTitle: "Guest Preview Workspace",
-            heroDescription:
-              "A limited preview before full onboarding.",
-            stats: dashboardStats.guest,
-            primaryPanel: getDashboardBundle("guest").primaryPanel,
-            permissions: rolePermissions.guest,
-          },
           student: {
             roleLabel: "Student Workspace",
             heroTitle: "Welcome back",
@@ -1265,7 +1083,7 @@ export function getTemplateSeedData() {
     ],
     users: demoUsers.map((user) => ({
       ...user,
-      status: user.role === "guest" ? "pending" : "active",
+      status: "active",
       permissions: rolePermissions[user.role],
       createdAt: "2026-03-24T00:00:00.000Z",
       updatedAt: "2026-03-24T00:00:00.000Z",

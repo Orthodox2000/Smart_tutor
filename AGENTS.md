@@ -16,10 +16,10 @@ This version has breaking changes. APIs, conventions, and file structure may all
 
 ## Authorization model
 
-- Roles are `guest`, `student`, `educator`, and `admin`.
+- Roles are `student`, `educator`, and `admin`.
 - Keep role rules centralized in `lib/mock-data.ts` and `lib/auth.ts`.
-- Do not add Firebase auth yet. Use the mock cookie session flow until the team explicitly replaces it.
-- Guests can browse public content and preview the workspace shell only.
+- Do not add Firebase auth yet. Use the Mongo-backed cookie session flow until the team explicitly replaces it.
+- Public visitors can browse public content without a stored user role.
 - Students can access personal dashboards, notices, tests, and learning material.
 - Educators can manage courses, create and grade tests, and coordinate messages.
 - Admins can create users, control access levels, and manage permissions.
@@ -28,11 +28,13 @@ This version has breaking changes. APIs, conventions, and file structure may all
 
 - Use the App Router only.
 - Put local API routes under `app/api/**/route.ts`.
-- Keep shared mock content in `lib/mock-data.ts`.
+- Keep shared bootstrap content in `lib/mock-data.ts`.
 - Keep MongoDB connection logic in `lib/mongodb.ts`.
-- Use `.env` with `MONGODB_URI` for future persistence work.
+- Use `.env.local` from `example.env` with `MONGODB_URI`, `MONGODB_DB`, and `MONGODB_BOOTSTRAP_KEY`.
 - Prefer server components for pages unless client state is required.
 - Use small client components for theme switching, login actions, and logout actions.
+- Standardized course names belong in `lib/course-library.ts`.
+- User integrity rules belong at the API/data-store boundary: one unique id and one unique email per person.
 
 ## Team consistency
 

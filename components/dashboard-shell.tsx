@@ -4,12 +4,21 @@ import Link from "next/link";
 import { useState } from "react";
 
 import { DashboardAccountDirectory } from "@/components/dashboard-account-directory";
+import { DashboardCourseManager } from "@/components/dashboard-course-manager";
 import { DashboardMessageCenter } from "@/components/dashboard-message-center";
 import { DashboardTestStudio } from "@/components/dashboard-test-studio";
 import { LiveClock } from "@/components/live-clock";
 import { LogoutButton } from "@/components/logout-button";
 import { ThemeToggle } from "@/components/theme-toggle";
-import type { ManagedUser, MessageItem, Role, SessionUser, TestItem, TestSubmission } from "@/lib/types";
+import type {
+  CourseItem,
+  ManagedUser,
+  MessageItem,
+  Role,
+  SessionUser,
+  TestItem,
+  TestSubmission,
+} from "@/lib/types";
 
 type DashboardBundle = {
   roleLabel: string;
@@ -22,7 +31,7 @@ type DashboardBundle = {
     items: { title: string; description: string; meta: string }[];
   };
   permissions: { title: string; description: string }[];
-  courses: { id: string; title: string; schedule: string; summary: string }[];
+  courses: CourseItem[];
   tests: TestItem[];
   messages: any[];
   submissions: TestSubmission[];
@@ -34,15 +43,11 @@ type Props = {
   dashboard: DashboardBundle;
   studentDirectory: ManagedUser[];
   managedUsers: ManagedUser[];
+  courseOptions: { standardKey: string; title: string }[];
   supportContact: string;
 };
 
 const sidebarByRole = {
-  guest: [
-    { id: "overview", label: "Overview" },
-    { id: "messages", label: "Messages" },
-    { id: "courses", label: "Courses" },
-  ],
   student: [
     { id: "overview", label: "Overview" },
     { id: "messages", label: "Messages" },
@@ -59,6 +64,7 @@ const sidebarByRole = {
     { id: "overview", label: "Overview" },
     { id: "messages", label: "Messages" },
     { id: "tests", label: "Test Studio" },
+    { id: "courses", label: "Courses" },
     { id: "accounts", label: "Accounts" },
   ],
 } as const;
@@ -69,6 +75,7 @@ export function DashboardShell({
   dashboard,
   studentDirectory,
   managedUsers,
+  courseOptions,
   supportContact,
 }: Props) {
   const [activeSection, setActiveSection] = useState<string>(
@@ -100,10 +107,10 @@ export function DashboardShell({
               Active Session
             </p>
             <p className="mt-3 truncate text-lg font-semibold text-[var(--color-heading)] sm:text-xl" title={session?.name}>
-              {session ? session.name : "Guest Preview"}
+              {session ? session.name : "Smart Tutor"}
             </p>
             <p className="mt-1 truncate text-sm text-[var(--color-muted)]" title={session?.email}>
-              {session ? session.email : "Public exploration mode"}
+              {session ? session.email : "Login required"}
             </p>
             <span className="mt-4 inline-flex max-w-full truncate rounded-full border border-[var(--color-border)] bg-[var(--color-panel)] px-3 py-2 text-xs font-semibold uppercase tracking-[0.12em] text-[var(--color-heading)]">
               {dashboard.roleLabel}
@@ -218,10 +225,10 @@ export function DashboardShell({
                   <div className="mt-5 grid gap-4">
                     <div className="surface-soft rounded-3xl p-5">
                       <p className="truncate text-lg font-semibold text-[var(--color-heading)]" title={session?.name}>
-                        {session ? session.name : "Guest Visitor"}
+                        {session ? session.name : "Smart Tutor User"}
                       </p>
                       <p className="mt-2 truncate text-sm leading-6 text-[var(--color-muted)]" title={session?.email}>
-                        {session ? session.email : "Public mode only"}
+                          {session ? session.email : "Login required"}
                       </p>
                       <p className="mt-2 text-sm leading-6 text-[var(--color-muted)]">
                         Access: {dashboard.roleLabel}
@@ -270,7 +277,14 @@ export function DashboardShell({
             <DashboardAccountDirectory initialUsers={managedUsers} />
           ) : null}
 
-          {showCourses || (role === "guest" && !showOverview && !showMessages) ? (
+          {showCourses && role === "admin" ? (
+            <DashboardCourseManager
+              initialCourses={dashboard.courses}
+              courseOptions={courseOptions}
+            />
+          ) : null}
+
+          {role !== "admin" && showCourses ? (
             <article className="surface rounded-[2rem] p-6">
               <div className="flex items-center justify-between gap-4">
                 <div>

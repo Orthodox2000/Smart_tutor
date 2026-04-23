@@ -10,7 +10,6 @@ import { getPublicInstituteData } from "@/lib/data-store";
 export const dynamic = "force-dynamic";
 
 const roleAccentMap = {
-  guest: "from-violet-50 to-white",
   student: "from-violet-50 to-white",
   educator: "from-violet-50 to-white",
   admin: "from-violet-50 to-white",

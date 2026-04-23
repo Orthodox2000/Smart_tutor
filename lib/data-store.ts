@@ -3,6 +3,11 @@ import { randomUUID } from "crypto";
 import type { Document } from "mongodb";
 
 import { getMongoDatabase } from "@/lib/mongodb";
+import {
+  getCourseTemplateByKey,
+  getCourseTemplateOptions,
+  inferCourseTemplateKey,
+} from "@/lib/course-library";
 import type {
   CourseItem,
   DashboardBundle,
@@ -32,6 +37,7 @@ type DashboardTemplate = {
 type UserDocument = SessionUser & {
   password: string;
   program: string;
+  emailKey?: string;
   status?: "active" | "pending";
   permissions?: PermissionItem[];
   createdAt?: string;
@@ -47,6 +53,8 @@ const COLLECTIONS = {
   submissions: "test_submissions",
   quizzes: "quiz_questions",
 } as const;
+
+let userIndexesPromise: Promise<void> | null = null;
 
 function toPlainData<T>(value: T): T {
   return JSON.parse(JSON.stringify(value)) as T;
@@ -73,6 +81,38 @@ async function getCollection<T extends Document>(
 ) {
   const db = await getMongoDatabase();
   return db.collection<T>(name);
+}
+
+async function ensureUserIndexes() {
+  if (!userIndexesPromise) {
+    userIndexesPromise = (async () => {
+      const collection = await getCollection<UserDocument>(COLLECTIONS.users);
+      await collection.updateMany(
+        {},
+        [
+          {
+            $set: {
+              emailKey: { $toLower: "$email" },
+            },
+          },
+        ],
+      );
+      await Promise.all([
+        collection.createIndex({ id: 1 }, { unique: true, name: "users_unique_id" }),
+        collection.createIndex({ emailKey: 1 }, { unique: true, name: "users_unique_emailKey" }),
+      ]);
+    })().catch((error) => {
+      userIndexesPromise = null;
+      throw error;
+    });
+  }
+
+  return userIndexesPromise;
+}
+
+async function getUsersCollection() {
+  await ensureUserIndexes();
+  return getCollection<UserDocument>(COLLECTIONS.users);
 }
 
 async function getContentDocument<T extends Document>(id: string) {
@@ -102,7 +142,7 @@ function toManagedUser(user: UserDocument): ManagedUser {
   return {
     ...toSessionUser(user),
     program: user.program,
-    status: user.status ?? (user.role === "guest" ? "pending" : "active"),
+    status: user.status ?? "active",
     passwordHint: user.password,
   };
 }
@@ -111,7 +151,7 @@ function getRoleLabel(role: Role) {
   if (role === "admin") return "Admin Console";
   if (role === "educator") return "Educator Desk";
   if (role === "student") return "Student Workspace";
-  return "Guest Preview";
+  return "Student Workspace";
 }
 
 function buildHeroTitle(role: Role, template: DashboardTemplate, user: SessionUser | null) {
@@ -134,6 +174,34 @@ function buildHeroTitle(role: Role, template: DashboardTemplate, user: SessionUs
   return template.heroTitle;
 }
 
+function hydrateCourse(document: Partial<CourseItem> & { id: string }) {
+  const templateKey =
+    document.standardKey ??
+    inferCourseTemplateKey(document.title) ??
+    "placement-accelerator";
+  const template =
+    getCourseTemplateByKey(templateKey) ?? getCourseTemplateByKey("placement-accelerator");
+
+  if (!template) {
+    throw new Error("Default course template could not be resolved.");
+  }
+
+  return {
+    id: document.id,
+    standardKey: templateKey,
+    tagline: document.tagline ?? template.tagline,
+    title: template.title,
+    schedule: document.schedule ?? template.schedule,
+    summary: document.summary ?? template.summary,
+    description: document.description ?? template.description,
+    duration: document.duration ?? template.duration,
+    mode: document.mode ?? template.mode,
+    audienceLabel: document.audienceLabel ?? template.audienceLabel,
+    points: document.points?.length ? document.points : template.points,
+    audience: document.audience?.length ? document.audience : template.audience,
+  } satisfies CourseItem;
+}
+
 export async function getPublicInstituteData() {
   return getContentDocument<PublicInstituteData>("public-site");
 }
@@ -144,16 +212,16 @@ export async function getMockQuizQuestions() {
 }
 
 export async function getDemoCredentials() {
-  const collection = await getCollection<UserDocument>(COLLECTIONS.users);
+  const collection = await getUsersCollection();
   const documents = await collection
     .find({
-      role: { $in: ["guest", "student", "educator", "admin"] as Role[] },
+      role: { $in: ["student", "educator", "admin"] as Role[] },
     })
     .toArray();
 
   const byRole = new Map(documents.map((document) => [document.role, document]));
 
-  return (["guest", "student", "educator", "admin"] as const)
+  return (["student", "educator", "admin"] as const)
     .map((role) => byRole.get(role))
     .flatMap((document) =>
       document
@@ -169,35 +237,77 @@ export async function getDemoCredentials() {
     ) as DemoCredential[];
 }
 
-export async function findUserByCredentials(email: string, password: string) {
-  const collection = await getCollection<UserDocument>(COLLECTIONS.users);
-  const user = await collection.findOne({ email, password });
+export async function findUserByCredentials(login: string, password: string) {
+  const collection = await getUsersCollection();
+  const normalizedLogin = login.toLowerCase();
+  const emailLocalPart = normalizedLogin.includes("@")
+    ? normalizedLogin.split("@")[0]
+    : normalizedLogin;
+  const user = await collection.findOne({
+    password,
+    $or: [
+      { email: normalizedLogin },
+      { name: login },
+      { name: normalizedLogin },
+      {
+        $expr: {
+          $eq: [
+            {
+              $arrayElemAt: [{ $split: [{ $toLower: "$email" }, "@"] }, 0],
+            },
+            emailLocalPart,
+          ],
+        },
+      },
+    ],
+  });
   return user ? toSessionUser(user) : null;
 }
 
 export async function findUserById(id: string) {
-  const collection = await getCollection<UserDocument>(COLLECTIONS.users);
+  const collection = await getUsersCollection();
   const user = await collection.findOne({ id });
   return user ? toSessionUser(user) : null;
 }
 
 export async function getCoursesForRole(role: Role) {
   const collection = await getCollection<CourseItem>(COLLECTIONS.courses);
-  return stripMongoIds(await collection.find({ audience: role }).toArray());
+  return stripMongoIds(await collection.find({ audience: role }).toArray()).map((course) =>
+    hydrateCourse(course),
+  );
 }
 
 export async function createCourse(input: {
-  title: string;
+  standardKey: string;
+  tagline: string;
   schedule: string;
   summary: string;
+  description: string;
+  duration: string;
+  mode: string;
+  audienceLabel: string;
+  points: string[];
   createdBy: string;
 }) {
+  const template = getCourseTemplateByKey(input.standardKey);
+
+  if (!template) {
+    throw new Error("Choose a valid standardized course name.");
+  }
+
   const course: CourseItem & { createdAt: string; createdBy: string } = {
     id: randomUUID(),
-    title: input.title,
-    schedule: input.schedule,
-    summary: input.summary,
-    audience: ["student", "educator", "admin"],
+    standardKey: input.standardKey,
+    tagline: input.tagline || template.tagline,
+    title: template.title,
+    schedule: input.schedule || template.schedule,
+    summary: input.summary || template.summary,
+    description: input.description || template.description,
+    duration: input.duration || template.duration,
+    mode: input.mode || template.mode,
+    audienceLabel: input.audienceLabel || template.audienceLabel,
+    points: input.points.length ? input.points : template.points,
+    audience: template.audience,
     createdAt: new Date().toISOString(),
     createdBy: input.createdBy,
   };
@@ -205,6 +315,64 @@ export async function createCourse(input: {
   const collection = await getCollection<typeof course>(COLLECTIONS.courses);
   await collection.insertOne(course);
   return course;
+}
+
+export async function updateCourse(input: {
+  id: string;
+  standardKey: string;
+  tagline: string;
+  schedule: string;
+  summary: string;
+  description: string;
+  duration: string;
+  mode: string;
+  audienceLabel: string;
+  points: string[];
+}) {
+  const template = getCourseTemplateByKey(input.standardKey);
+
+  if (!template) {
+    throw new Error("Choose a valid standardized course name.");
+  }
+
+  const collection = await getCollection<CourseItem>(COLLECTIONS.courses);
+  await collection.updateOne(
+    { id: input.id },
+    {
+      $set: {
+        standardKey: input.standardKey,
+        tagline: input.tagline || template.tagline,
+        title: template.title,
+        schedule: input.schedule || template.schedule,
+        summary: input.summary || template.summary,
+        description: input.description || template.description,
+        duration: input.duration || template.duration,
+        mode: input.mode || template.mode,
+        audienceLabel: input.audienceLabel || template.audienceLabel,
+        points: input.points.length ? input.points : template.points,
+        audience: template.audience,
+        updatedAt: new Date().toISOString(),
+      },
+    },
+  );
+  const updated = await collection.findOne({ id: input.id });
+
+  if (!updated) {
+    throw new Error("Updated course could not be found in MongoDB.");
+  }
+
+  return hydrateCourse(stripMongoId(updated));
+}
+
+export async function getAllDetailedCourses() {
+  const collection = await getCollection<CourseItem>(COLLECTIONS.courses);
+  return stripMongoIds(await collection.find({}).sort({ title: 1 }).toArray()).map((course) =>
+    hydrateCourse(course),
+  );
+}
+
+export function getStandardizedCourseOptions() {
+  return getCourseTemplateOptions();
 }
 
 export async function getTestsForRole(role: Role, userId?: string) {
@@ -290,13 +458,13 @@ export async function createMessage(input: {
 }
 
 export async function getUsersForAdmin() {
-  const collection = await getCollection<UserDocument>(COLLECTIONS.users);
+  const collection = await getUsersCollection();
   const users = await collection.find({}).sort({ name: 1 }).toArray();
   return users.map(toManagedUser);
 }
 
 export async function getStudentDirectory() {
-  const collection = await getCollection<UserDocument>(COLLECTIONS.users);
+  const collection = await getUsersCollection();
   const students = await collection.find({ role: "student" }).sort({ name: 1 }).toArray();
   return students.map(toManagedUser);
 }
@@ -313,16 +481,17 @@ export async function createUserRecord(input: {
     id: randomUUID(),
     name: input.name,
     email: input.email,
+    emailKey: input.email.toLowerCase(),
     role: input.role,
     label: getRoleLabel(input.role),
     password: input.password,
     program: input.program,
-    status: input.status ?? (input.role === "guest" ? "pending" : "active"),
+    status: input.status ?? "active",
     createdAt: new Date().toISOString(),
     updatedAt: new Date().toISOString(),
   };
 
-  const collection = await getCollection<UserDocument>(COLLECTIONS.users);
+  const collection = await getUsersCollection();
   await collection.insertOne(document);
   return toManagedUser(document);
 }
@@ -336,15 +505,16 @@ export async function updateUserRecord(input: {
   program: string;
   status?: "active" | "pending";
 }) {
-  const collection = await getCollection<UserDocument>(COLLECTIONS.users);
+  const collection = await getUsersCollection();
   const document: Partial<UserDocument> = {
     name: input.name,
     email: input.email,
+    emailKey: input.email.toLowerCase(),
     role: input.role,
     label: getRoleLabel(input.role),
     password: input.password,
     program: input.program,
-    status: input.status ?? (input.role === "guest" ? "pending" : "active"),
+    status: input.status ?? "active",
     updatedAt: new Date().toISOString(),
   };
 
@@ -359,8 +529,8 @@ export async function updateUserRecord(input: {
 }
 
 export async function findUserDocumentByEmail(email: string) {
-  const collection = await getCollection<UserDocument>(COLLECTIONS.users);
-  return collection.findOne({ email });
+  const collection = await getUsersCollection();
+  return collection.findOne({ emailKey: email.toLowerCase() });
 }
 
 export async function getTestSubmissionsForRole(role: Role, userId?: string) {
@@ -468,7 +638,7 @@ export async function getDashboardBundle(role: Role, userId?: string): Promise<D
     stats: template.stats,
     primaryPanel: template.primaryPanel,
     permissions: template.permissions,
-    courses: courses.slice(0, 3),
+    courses: role === "admin" ? courses : courses.slice(0, 3),
     tests: tests.slice(0, 4),
     messages: messages.slice(0, 6),
     submissions: submissions.slice(0, 6),
